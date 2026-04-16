@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EngHub — Engineering Career Community</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="CSS/homepage-style.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">⚙️</div>
+    Eng<span>Hub</span>
+  </a>
+  <div class="nav-links">
+    <a href="#demo" class="nav-link">Demo</a>
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#majors" class="nav-link">Majors</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#contact" class="nav-link">Contact</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-auth-logged-out" id="nav-auth-out">
+      <button class="btn btn-ghost btn-sm" onclick="openModal('login')">Sign In</button>
+      <button class="btn btn-primary btn-sm" onclick="openModal('register')">Join Free →</button>
+    </div>
+    <div class="nav-auth-logged-in" id="nav-auth-in">
+      <a href="engineering-forum.html" class="btn btn-outline btn-sm">Open Forum →</a>
+      <div class="user-nav-chip" id="user-nav-chip">
+        <div class="user-nav-avatar" id="nav-avatar">U</div>
+        <span class="user-nav-name" id="nav-username">User</span>
+      </div>
+      <button class="nav-logout" onclick="handleLogout()">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<section class="hero">
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    Now in Beta — Join the waitlist
+  </div>
+  <h1 class="hero-title">
+    The Career Community<br>
+    <span class="line-accent">Built for Engineers</span>
+  </h1>
+  <p class="hero-sub">
+    Discuss salaries, share interview experiences, and connect with professionals across every engineering discipline — all in one place.
+  </p>
+  <div class="hero-ctas">
+    <button class="btn btn-primary btn-lg" onclick="openModal('register')">Join EngHub Free →</button>
+    <a href="#demo" class="btn btn-ghost btn-lg">Watch Demo ↓</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">8+</div>
+      <div class="hero-stat-label">Engineering Majors</div>
+    </div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">80+</div>
+      <div class="hero-stat-label">Career Tracks</div>
+    </div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">AI</div>
+      <div class="hero-stat-label">Career Advisor Built-in</div>
+    </div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">Free</div>
+      <div class="hero-stat-label">Always for Students</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ DEMO ═══════════════════════════════ -->
+<section class="section" id="demo">
+  <div class="section-inner">
+    <div class="section-label">See It In Action</div>
+    <h2 class="section-title">Everything you need,<br>in one platform</h2>
+    <p class="section-sub">Watch how EngHub brings together career discussions, salary data, and AI advice — organized by your exact engineering major and job role.</p>
+
+    <div class="demo-wrapper">
+      <div class="demo-bar">
+        <div class="demo-dot red"></div>
+        <div class="demo-dot amber"></div>
+        <div class="demo-dot green"></div>
+        <div class="demo-url">enghub.io/forum/cs/software-engineer</div>
+      </div>
+      <div class="demo-screen" id="demo-screen">
+        <!-- Fake app preview -->
+        <div class="demo-app">
+          <div class="demo-sidebar">
+            <div class="demo-sidebar-logo">Eng<span>Hub</span></div>
+            <div class="demo-sidebar-item">
+              <div class="demo-sidebar-dot" style="background:#505878"></div> All Majors
+            </div>
+            <div class="demo-sidebar-item active">
+              <div class="demo-sidebar-dot" style="background:#4f8ef7"></div> Computer Science
+            </div>
+            <div class="demo-sidebar-item">
+              <div class="demo-sidebar-dot" style="background:#fbbf24"></div> Electrical Eng.
+            </div>
+            <div class="demo-sidebar-item">
+              <div class="demo-sidebar-dot" style="background:#f87171"></div> Mechanical Eng.
+            </div>
+            <div class="demo-sidebar-item">
+              <div class="demo-sidebar-dot" style="background:#34d399"></div> Civil Eng.
+            </div>
+            <div class="demo-sidebar-item">
+              <div class="demo-sidebar-dot" style="background:#a78bfa"></div> Chemical Eng.
+            </div>
+            <div class="demo-sidebar-item">
+              <div class="demo-sidebar-dot" style="background:#f472b6"></div> Aerospace Eng.
+            </div>
+          </div>
+          <div class="demo-main">
+            <div class="demo-topbar">
+              <div class="demo-topbar-title">Computer Science</div>
+              <div class="demo-topbar-btn">+ New Post</div>
+            </div>
+            <div class="demo-content">
+              <div class="demo-threads">
+                <div class="demo-thread-item active">
+                  <div class="demo-thread-tag" style="background:rgba(79,142,247,0.15);color:#4f8ef7">CS</div>
+                  <div class="demo-thread-title">Rejected from FAANG 3x — what finally worked</div>
+                  <div class="demo-thread-meta">▲ 47 · 💬 12 · codeGrinder99</div>
+                </div>
+                <div class="demo-thread-item">
+                  <div class="demo-thread-tag" style="background:rgba(79,142,247,0.15);color:#4f8ef7">CS</div>
+                  <div class="demo-thread-title">Is an MS in ML worth it for AI roles in 2025?</div>
+                  <div class="demo-thread-meta">▲ 31 · 💬 8 · tensorFlow_Bro</div>
+                </div>
+                <div class="demo-thread-item">
+                  <div class="demo-thread-tag" style="background:rgba(167,139,250,0.15);color:#a78bfa">AE</div>
+                  <div class="demo-thread-title">SpaceX Raptor team experience — AMA</div>
+                  <div class="demo-thread-meta">▲ 89 · 💬 34 · raptorWrangler</div>
+                </div>
+              </div>
+              <div class="demo-msgs">
+                <div class="demo-msg">
+                  <div class="demo-msg-header">
+                    <div class="demo-msg-avatar" style="background:#4f8ef7">cG</div>
+                    <div class="demo-msg-name">codeGrinder99</div>
+                  </div>
+                  <div class="demo-msg-body">After failing 3 FAANG loops, I finally landed Meta L4. The key was switching from grinding random LeetCode to mastering 10 core patterns...</div>
+                </div>
+                <div class="demo-msg">
+                  <div class="demo-msg-header">
+                    <div class="demo-msg-avatar" style="background:#34d399">AA</div>
+                    <div class="demo-msg-name">AlgoAmy</div>
+                  </div>
+                  <div class="demo-msg-body">Don't neglect behavioral! I bombed an Amazon loop because my STAR stories were weak even though my coding was fine.</div>
+                </div>
+                <div class="demo-msg ai">
+                  <div class="demo-msg-header">
+                    <div class="demo-msg-avatar" style="background:linear-gradient(135deg,#4f8ef7,#a78bfa)">🤖</div>
+                    <div class="demo-msg-name" style="color:#4f8ef7">EngHub AI</div>
+                  </div>
+                  <div class="demo-msg-body">Top FAANG failure reasons: poor time management, not communicating thought process, weak behavioral stories...</div>
+                  <div class="demo-typing"><span></span><span></span><span></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Play overlay -->
+        <div class="play-overlay" id="play-overlay">
+          <div>
+            <div class="play-btn" onclick="playDemo()">▶</div>
+            <div class="play-label">Watch 60-second demo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════ FEATURES ═══════════════════════════════ -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="section-label">What We Offer</div>
+    <h2 class="section-title">Built different,<br>for engineers</h2>
+    <p class="section-sub">No finance bros. No generic advice. A platform built specifically around how engineers navigate careers.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🗂️</div>
+        <div class="feature-title">Major-Specific Forums</div>
+        <div class="feature-body">8 engineering disciplines, each with dedicated spaces. No more wading through irrelevant content — find discussions that actually apply to your field.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💼</div>
+        <div class="feature-title">Role-Based Threads</div>
+        <div class="feature-body">Each major has 10+ career tracks. Discuss SWE vs ML Engineer, Structural vs Geotechnical — conversations organized around your exact role.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-title">AI Career Advisor</div>
+        <div class="feature-body">Ask about salaries, interview prep, or career paths and get instant, field-specific guidance from our built-in AI advisor.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <div class="feature-title">Real Salary Discussions</div>
+        <div class="feature-body">Actual engineers sharing real comp data. Know what to expect and negotiate with confidence — by role, company, and experience level.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎓</div>
+        <div class="feature-title">Student & Pro Friendly</div>
+        <div class="feature-body">Whether you're a freshman exploring options or a 10-year veteran, EngHub has a place for you. Register as a student or experienced professional.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <div class="feature-title">Anonymous-Friendly</div>
+        <div class="feature-body">Share candidly about your company, salary, or job search without fear. Like Blind, but built for all engineers — not just big tech.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════ MAJORS ═══════════════════════════════ -->
+<section class="section" id="majors">
+  <div class="section-inner">
+    <div class="section-label">Engineering Disciplines</div>
+    <h2 class="section-title">Your major.<br>Your community.</h2>
+    <p class="section-sub">Eight dedicated communities, each with career tracks tailored to that discipline's real job landscape.</p>
+    <div class="majors-grid">
+      <div class="major-card">
+        <div class="major-card-icon">💻</div>
+        <div class="major-card-name">Computer Science</div>
+        <div class="major-card-jobs">SWE · ML Engineer · DevOps · Security · PM</div>
+        <div class="major-card-bar" style="background:linear-gradient(90deg,#4f8ef7,#a78bfa)"></div>
+      </div>
+      <div class="major-card">
+        <div class="major-card-icon">⚡</div>
+        <div class="major-card-name">Electrical Engineering</div>
+        <div class="major-card-jobs">IC Design · Embedded · RF · FPGA · Power</div>
+        <div class="major-card-bar" style="background:linear-gradient(90deg,#fbbf24,#f87171)"></div>
+      </div>
+      <div class="major-card">
+        <div class="major-card-icon">⚙️</div>
+        <div class="major-card-name">Mechanical Engineering</div>
+        <div class="major-card-jobs">Robotics · Automotive · HVAC · Thermal · Design</div>
+        <div class="major-card-bar" style="background:linear-gradient(90deg,#f87171,#fbbf24)"></div>
+      </div>
+      <div class="major-card">
+        <div class="major-card-icon">🏗️</div>
+        <div class="major-card-name">Civil Engineering</div>
+        <div class="major-card-jobs">Structural · Transportation · Geotechnical · Urban</div>
+        <div class="major-card-bar" style="background:linear-gradient(90deg,#34d399,#4f8ef7)"></div>
+      </div>
+      <div class="major-card">
+        <div class="major-card-icon">🧪</div>
+        <div class="major-card-name">Chemical Engineering</div>
+        <div class="major-card-jobs">Process · Pharma · Petrochemical · Materials</div>
+        <div class="major-card-bar" style="background:linear-gradient(90deg,#a78bfa,#f472b6)"></div>
+      </div>
+      <div class="major-card">
+        <div class="major-card-icon">🚀</div>
+        <div class="major-card-name">Aerospace Engineering</div>
+        <div class="major-card-jobs">Propulsion · Avionics · Structures · Space Systems</div>
+        <div class="major-card-bar" style="background:linear-gradient(90deg,#f472b6,#a78bfa)"></div>
+      </div>
+      <div class="major-card">
+        <div class="major-card-icon">🧬</div>
+        <div class="major-card-name">Biomedical Engineering</div>
+        <div class="major-card-jobs">Med Devices · Bioinformatics · Clinical · Pharma</div>
+        <div class="major-card-bar" style="background:linear-gradient(90deg,#2dd4bf,#34d399)"></div>
+      </div>
+      <div class="major-card">
+        <div class="major-card-icon">🌱</div>
+        <div class="major-card-name">Environmental Engineering</div>
+        <div class="major-card-jobs">Sustainability · Water · Air Quality · Remediation</div>
+        <div class="major-card-bar" style="background:linear-gradient(90deg,#86efac,#34d399)"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════ HOW IT WORKS ═══════════════════════════════ -->
+<section class="section">
+  <div class="section-inner">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start">
+      <div>
+        <div class="section-label">How It Works</div>
+        <h2 class="section-title">Simple.<br>Powerful.</h2>
+        <p class="section-sub" style="margin-bottom:0">Get started in minutes and find the career insights you've been looking for.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">Create your account</div>
+            <div class="step-body">Register as a student (with your year) or experienced professional. Choose your primary engineering major to personalize your feed.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">Find your discipline</div>
+            <div class="step-body">Navigate to your engineering major and filter by the specific career track you're interested in — from ML Engineer to Propulsion Engineer.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">Join the conversation</div>
+            <div class="step-body">Read real experiences, post questions, share salary data, or get instant answers from the AI Advisor — all in one place.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════ ABOUT / FOUNDERS ═══════════════════════════════ -->
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="section-label">About EngHub</div>
+    <h2 class="section-title">Built by engineers,<br>for engineers</h2>
+
+    <div class="story-grid">
+      <div class="story-text">
+        <p>We're a team of students at the <strong>University of Kentucky</strong> who got tired of having nowhere to talk honestly about engineering careers. Wall Street Oasis exists for finance. Blind exists for big tech. <strong>But what about the civil engineer trying to negotiate their first salary? Or the biomedical engineer deciding between med-tech and a PhD?</strong></p>
+        <p>EngHub was born out of that frustration. We wanted a place where engineering students and professionals could have the kind of <strong>candid, specific conversations</strong> that actually help — organized by major, broken down by career track, and enhanced by AI.</p>
+        <p>We're in early beta and growing. <strong>Join us and help shape what EngHub becomes.</strong></p>
+      </div>
+      <div class="story-visual">
+        <div class="story-stat-row">
+          <div class="story-stat-item">
+            <div class="story-stat-label">CS / Software Career Demand <span>Very High</span></div>
+            <div class="story-stat-bar"><div class="story-stat-fill" style="width:92%;background:linear-gradient(90deg,#4f8ef7,#a78bfa)"></div></div>
+          </div>
+          <div class="story-stat-item">
+            <div class="story-stat-label">Electrical / Semiconductor <span>High</span></div>
+            <div class="story-stat-bar"><div class="story-stat-fill" style="width:80%;background:linear-gradient(90deg,#fbbf24,#f87171)"></div></div>
+          </div>
+          <div class="story-stat-item">
+            <div class="story-stat-label">Aerospace / Space Boom <span>Growing Fast</span></div>
+            <div class="story-stat-bar"><div class="story-stat-fill" style="width:75%;background:linear-gradient(90deg,#f472b6,#a78bfa)"></div></div>
+          </div>
+          <div class="story-stat-item">
+            <div class="story-stat-label">Mechanical / Robotics <span>Strong</span></div>
+            <div class="story-stat-bar"><div class="story-stat-fill" style="width:70%;background:linear-gradient(90deg,#f87171,#fbbf24)"></div></div>
+          </div>
+          <div class="story-stat-item">
+            <div class="story-stat-label">Environmental / Sustainability <span>Rising</span></div>
+            <div class="story-stat-bar"><div class="story-stat-fill" style="width:62%;background:linear-gradient(90deg,#34d399,#86efac)"></div></div>
+          </div>
+          <div class="story-stat-item">
+            <div class="story-stat-label">Biomedical Engineering <span>Steady</span></div>
+            <div class="story-stat-bar"><div class="story-stat-fill" style="width:58%;background:linear-gradient(90deg,#2dd4bf,#34d399)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOUNDERS -->
+    <div style="margin-top:80px">
+      <div class="section-label">Meet the Founders</div>
+      <h2 class="section-title" style="margin-bottom:8px">The team behind<br>EngHub</h2>
+      <p style="color:var(--text2);font-size:16px;font-weight:300;margin-bottom:0">Three University of Kentucky students who decided to build the community they always needed.</p>
+    </div>
+
+    <div class="founders-grid">
+      <!-- Founder 1 -->
+      <div class="founder-card">
+        <div class="founder-photo">
+          <div class="founder-photo-overlay"></div>
+          <img src="images/Mnajarzadegan.jpg" alt="Mohammad Najarzadegan">
+        </div>
+        <div class="founder-info">
+          <div class="founder-name">Mohammad Najarzadegan</div>
+          <div class="founder-role">Co-Founder & CEO</div>
+          <div class="founder-bio">Visionary behind EngHub. Mohammad, a Finance and Accounting student at UKY. identified the gap in engineering career communities and drove the product from idea to launch.</div>
+          <div class="founder-links">
+            <a href="https://www.linkedin.com/in/mohammad-nj/" class="founder-link">🔗 LinkedIn</a>
+            <a href="mailto:mohammad.nj@uky.edu" class="founder-link">✉️ Email</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Founder 2 -->
+      <div class="founder-card">
+        <div class="founder-photo">
+          <div class="founder-photo-overlay"></div>
+          <img src="images/HMoore.jpg" alt="Henry Moore">
+        </div>
+        <div class="founder-info">
+          <div class="founder-name">Henry Moore</div>
+          <div class="founder-role">Co-Founder & CFO</div>
+          <div class="founder-bio">Operations and growth lead for EngHub. Henry, a Finance and Accounting student at UKY, brings strategic thinking and hustle to building the community from the ground up.</div>
+          <div class="founder-links">
+            <a href="https://www.linkedin.com/in/henry-moore-143541329/" class="founder-link">🔗 LinkedIn</a>
+            <a href="mailto:henry.moore@uky.edu" class="founder-link">✉️ Email</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Founder 3 -->
+      <div class="founder-card">
+        <div class="founder-photo">
+          <div class="founder-photo-overlay"></div>
+          <img src="images/nakula.jpg" alt="Nikhil Akula">
+        </div>
+        <div class="founder-info">
+          <div class="founder-name">Nikhil Akula</div>
+          <div class="founder-role">Co-Founder & CTO</div>
+          <div class="founder-bio">The technical brain of EngHub. Nikhil, a Computer Science and Finance student at UKY, architected and built the entire platform — from the forum engine to the AI advisor integration.</div>
+          <div class="founder-links">
+            <a href="https://www.linkedin.com/in/akulan/" class="founder-link">🔗 LinkedIn</a>
+            <a href="mailto:nikhil.akula@uky.edu" class="founder-link">✉️ Email</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════ CONTACT ═══════════════════════════════ -->
+<section class="section" id="contact">
+  <div class="section-inner">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title">We'd love to<br>hear from you</h2>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Let's connect</h3>
+        <p>Whether you're a student wanting early access, a professor interested in collaborating, an investor, or just have feedback — we want to hear it. We're a small team and we actually read every message.</p>
+        <div class="contact-methods">
+          <div class="contact-method">
+            <div class="contact-method-icon">📧</div>
+            <div>
+              <div class="contact-method-label">General Inquiries</div>
+              <div class="contact-method-value">hello@enghub.io</div>
+            </div>
+          </div>
+          <div class="contact-method">
+            <div class="contact-method-icon">🎓</div>
+            <div>
+              <div class="contact-method-label">University Partnerships</div>
+              <div class="contact-method-value">partnerships@enghub.io</div>
+            </div>
+          </div>
+          <div class="contact-method">
+            <div class="contact-method-icon">💼</div>
+            <div>
+              <div class="contact-method-label">Investors & Press</div>
+              <div class="contact-method-value">investors@enghub.io</div>
+            </div>
+          </div>
+          <div class="contact-method">
+            <div class="contact-method-icon">📍</div>
+            <div>
+              <div class="contact-method-label">Based At</div>
+              <div class="contact-method-value">University of Kentucky, Lexington KY</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <h3>Send us a message</h3>
+        <div id="contact-alert" class="alert success"></div>
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input id="contact-name" class="form-input" type="text" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input id="contact-email" class="form-input" type="email" placeholder="you@university.edu">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <select id="contact-subject" class="form-input form-select">
+            <option>General Feedback</option>
+            <option>University Partnership</option>
+            <option>Investor Inquiry</option>
+            <option>Bug Report</option>
+            <option>Press / Media</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea id="contact-message" class="form-input" placeholder="Tell us what's on your mind…"></textarea>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:4px" onclick="submitContact()">Send Message →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CTA ═══════════════════════════════ -->
+<div class="cta-banner">
+  <h2>Ready to find your engineering community?</h2>
+  <p>Join thousands of engineering students and professionals sharing real career insights.</p>
+  <div class="cta-btns">
+    <button class="btn btn-primary btn-lg" onclick="openModal('register')">Create Free Account →</button>
+    <a href="engineering-forum.html" class="btn btn-ghost btn-lg">Preview the Forum</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="footer-logo">
+          <div class="footer-logo-mark">⚙️</div>
+          Eng<span>Hub</span>
+        </a>
+        <p class="footer-tagline">The career community built for every engineering major. Discuss salaries, share advice, get AI guidance.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="#features" class="footer-link">Features</a>
+        <a href="#majors" class="footer-link">Majors</a>
+        <a href="engineering-forum.html" class="footer-link">Forum</a>
+        <a href="#" class="footer-link" onclick="openModal('register');return false">Join Free</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#about" class="footer-link">About Us</a>
+        <a href="#contact" class="footer-link">Contact</a>
+        <a href="#" class="footer-link">Press</a>
+        <a href="#" class="footer-link">Careers</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+        <a href="#" class="footer-link">Cookie Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 EngHub. All rights reserved.</div>
+      <div class="footer-made">Built with ❤️ at the University of Kentucky</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════ AUTH MODAL ═══════════════════════════════ -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-wrapper">
+    <div class="modal">
+      <div class="modal-logo">
+        <div class="modal-logo-mark">⚙️</div>
+        <h2>Eng<span>Hub</span></h2>
+      </div>
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</div>
+        <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Register</div>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="auth-form active" id="form-login">
+        <div id="login-alert" class="alert error"></div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input id="login-email" class="form-input" type="email" placeholder="you@university.edu">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input id="login-password" class="form-input" type="password" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="handleLogin()">Sign In →</button>
+      </div>
+
+      <!-- REGISTER -->
+      <div class="auth-form" id="form-register">
+        <div id="reg-alert" class="alert error"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input id="reg-first" class="form-input" type="text" placeholder="Alex">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input id="reg-last" class="form-input" type="text" placeholder="Johnson">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input id="reg-email" class="form-input" type="email" placeholder="you@university.edu">
+        </div>
+        <div class="form-group">
+          <label class="form-label">I am a…</label>
+          <select id="reg-type" class="form-input form-select" onchange="toggleRegType()">
+            <option value="student">Student</option>
+            <option value="professional">Working Professional</option>
+            <option value="recent">Recent Graduate</option>
+          </select>
+        </div>
+        <!-- Student fields -->
+        <div id="student-fields">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Year in College</label>
+              <select id="reg-year" class="form-input form-select">
+                <option>Freshman</option>
+                <option>Sophomore</option>
+                <option>Junior</option>
+                <option>Senior</option>
+                <option>Graduate Student</option>
+                <option>PhD Student</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">University</label>
+              <input id="reg-uni" class="form-input" type="text" placeholder="e.g. Univ. of Kentucky">
+            </div>
+          </div>
+        </div>
+        <!-- Professional fields -->
+        <div id="professional-fields" style="display:none">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Years of Experience</label>
+              <select id="reg-exp" class="form-input form-select">
+                <option>0–1 years</option>
+                <option>1–3 years</option>
+                <option>3–5 years</option>
+                <option>5–10 years</option>
+                <option>10+ years</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Current Company</label>
+              <input id="reg-company" class="form-input" type="text" placeholder="e.g. SpaceX (optional)">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Engineering Major</label>
+          <select id="reg-major" class="form-input form-select">
+            <option value="">Select your major…</option>
+            <option value="cs">Computer Science / Software</option>
+            <option value="elec">Electrical Engineering</option>
+            <option value="mech">Mechanical Engineering</option>
+            <option value="civil">Civil Engineering</option>
+            <option value="chem">Chemical Engineering</option>
+            <option value="aero">Aerospace Engineering</option>
+            <option value="bio">Biomedical Engineering</option>
+            <option value="env">Environmental Engineering</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input id="reg-password" class="form-input" type="password" placeholder="min. 6 chars">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm</label>
+            <input id="reg-confirm" class="form-input" type="password" placeholder="repeat">
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="handleRegister()">Create Account →</button>
+      </div>
+    </div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+  </div>
+</div>
+<script src="JS/homepage.js"></script>
+</body>
+</html>
