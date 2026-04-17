@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EngHub — Engineering Career Forum</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="CSS/forum-style.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ AUTH ══════════════════════════════════════ -->
+<div id="auth-screen" class="screen active">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">⚙️</div>
+      <h1>Eng<span>Hub</span></h1>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchAuthTab('login')">Sign In</div>
+      <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="login-form" class="auth-form active">
+      <div id="login-alert" class="alert error"></div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input id="login-email" class="form-input" type="email" placeholder="engineer@university.edu">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input id="login-password" class="form-input" type="password" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary" style="margin-top:8px" onclick="handleLogin()">Sign In →</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="register-form" class="auth-form">
+      <div id="reg-alert" class="alert error"></div>
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input id="reg-name" class="form-input" type="text" placeholder="Alex Johnson">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input id="reg-email" class="form-input" type="email" placeholder="alex@university.edu">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Engineering Major</label>
+        <select id="reg-major" class="form-input form-select">
+          <option value="">Select your major…</option>
+          <option value="cs">Computer Science / Software</option>
+          <option value="elec">Electrical Engineering</option>
+          <option value="mech">Mechanical Engineering</option>
+          <option value="civil">Civil Engineering</option>
+          <option value="chem">Chemical Engineering</option>
+          <option value="aero">Aerospace Engineering</option>
+          <option value="bio">Biomedical Engineering</option>
+          <option value="env">Environmental Engineering</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input id="reg-password" class="form-input" type="password" placeholder="min. 6 characters">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input id="reg-confirm" class="form-input" type="password" placeholder="repeat password">
+      </div>
+      <button class="btn btn-primary" style="margin-top:8px" onclick="handleRegister()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ APP ══════════════════════════════════════ -->
+<div id="app-screen" class="screen">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">⚙️</div>
+        Eng<span>Hub</span>
+      </div>
+      <div class="user-chip" id="user-chip">
+        <div class="avatar" id="sidebar-avatar">A</div>
+        <div>
+          <div class="avatar-name" id="sidebar-name">Alex J.</div>
+          <div class="avatar-major" id="sidebar-major">CS Engineering</div>
+        </div>
+        <span class="logout-btn" onclick="handleLogout()" title="Sign out">⏻</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Engineering Majors</div>
+      <button class="major-btn active" onclick="selectMajor('all')" id="major-btn-all">
+        <span class="major-dot" style="background:var(--text3)"></span>
+        All Majors
+        <span class="major-count" id="count-all">0</span>
+      </button>
+      <button class="major-btn" onclick="selectMajor('cs')" id="major-btn-cs">
+        <span class="major-dot dot-cs"></span>
+        Computer Science
+        <span class="major-count" id="count-cs">0</span>
+      </button>
+      <button class="major-btn" onclick="selectMajor('elec')" id="major-btn-elec">
+        <span class="major-dot dot-elec"></span>
+        Electrical Eng.
+        <span class="major-count" id="count-elec">0</span>
+      </button>
+      <button class="major-btn" onclick="selectMajor('mech')" id="major-btn-mech">
+        <span class="major-dot dot-mech"></span>
+        Mechanical Eng.
+        <span class="major-count" id="count-mech">0</span>
+      </button>
+      <button class="major-btn" onclick="selectMajor('civil')" id="major-btn-civil">
+        <span class="major-dot dot-civil"></span>
+        Civil Engineering
+        <span class="major-count" id="count-civil">0</span>
+      </button>
+      <button class="major-btn" onclick="selectMajor('chem')" id="major-btn-chem">
+        <span class="major-dot dot-chem"></span>
+        Chemical Eng.
+        <span class="major-count" id="count-chem">0</span>
+      </button>
+      <button class="major-btn" onclick="selectMajor('aero')" id="major-btn-aero">
+        <span class="major-dot dot-aero"></span>
+        Aerospace Eng.
+        <span class="major-count" id="count-aero">0</span>
+      </button>
+      <button class="major-btn" onclick="selectMajor('bio')" id="major-btn-bio">
+        <span class="major-dot dot-bio"></span>
+        Biomedical Eng.
+        <span class="major-count" id="count-bio">0</span>
+      </button>
+      <button class="major-btn" onclick="selectMajor('env')" id="major-btn-env">
+        <span class="major-dot dot-env"></span>
+        Environmental Eng.
+        <span class="major-count" id="count-env">0</span>
+      </button>
+    </div>
+
+    <div class="sidebar-actions">
+      <button class="btn btn-primary" style="width:100%;font-size:13.5px" onclick="openNewPostModal()">+ New Post</button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">All Engineering</div>
+      <div class="topbar-major-badge" id="topbar-badge" style="display:none"></div>
+      <div class="topbar-actions">
+        <button class="btn btn-sm btn-ai" onclick="toggleAIPanel()">🤖 AI Advisor</button>
+        <button class="btn btn-sm btn-ghost" onclick="openNewPostModal()">+ New Post</button>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <!-- THREAD LIST -->
+      <div class="thread-list-panel">
+        <div class="panel-header">
+          <span class="panel-title">Discussions</span>
+          <span class="panel-count" id="thread-count">0</span>
+          <div class="panel-actions">
+            <input id="search-input" class="form-input" style="width:130px;font-size:12px;padding:6px 10px" placeholder="Search…" oninput="renderThreadList()">
+          </div>
+        </div>
+        <div class="job-tabs-scroll" id="job-tabs"></div>
+        <div class="thread-list" id="thread-list"></div>
+      </div>
+
+      <!-- THREAD VIEW -->
+      <div class="thread-view-panel" id="thread-view-panel">
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">💬</div>
+          <div class="empty-title">Select a discussion</div>
+          <div class="empty-sub">Pick a thread from the left to read and join the conversation</div>
+        </div>
+        <div id="thread-content" style="display:none;flex:1;display:none;flex-direction:column;overflow:hidden">
+          <div class="thread-view-header">
+            <div class="thread-view-title" id="tv-title"></div>
+            <div class="thread-view-meta">
+              <span class="badge" id="tv-major-badge"></span>
+              <span class="badge" id="tv-job-badge" style="background:var(--surface2);color:var(--text2)"></span>
+              <span style="font-size:12.5px;color:var(--text3);margin-left:auto" id="tv-meta"></span>
+            </div>
+          </div>
+          <div class="messages-scroll" id="messages-scroll"></div>
+          <div class="composer">
+            <div class="composer-header">
+              <div class="avatar" id="composer-avatar">A</div>
+              <span class="composer-label">Add your reply</span>
+              <div class="composer-ai-toggle">
+                <span style="font-size:12px">🤖 AI Reply</span>
+                <div class="toggle-switch" id="ai-toggle" onclick="toggleAIReply()"></div>
+              </div>
+            </div>
+            <textarea id="reply-textarea" class="composer-textarea" placeholder="Share your experience, ask a question, or give advice…"></textarea>
+            <div class="composer-footer">
+              <span class="composer-hint">Markdown supported · Be respectful</span>
+              <button class="btn btn-primary btn-sm" onclick="submitReply()">Post Reply →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI PANEL -->
+      <div class="ai-panel" id="ai-panel" style="display:none">
+        <div class="ai-panel-header">
+          <span style="font-size:16px">🤖</span>
+          <span class="ai-panel-title">EngHub AI Advisor</span>
+          <button class="ai-close" onclick="toggleAIPanel()">✕</button>
+        </div>
+        <div class="ai-chat-scroll" id="ai-chat-scroll">
+          <div class="ai-msg bot">
+            <div class="ai-icon">AI ADVISOR</div>
+            Hi! I'm your Engineering Career AI Advisor. Ask me anything about salaries, interview prep, career paths, industry trends, or specific roles in any engineering field. 🚀
+          </div>
+        </div>
+        <div class="ai-composer">
+          <input class="ai-input" id="ai-input" placeholder="Ask about careers, salaries, interviews…" onkeydown="if(event.key==='Enter')sendAIMessage()">
+          <button class="ai-send" onclick="sendAIMessage()">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW POST MODAL -->
+<div class="modal-overlay" id="new-post-modal">
+  <div class="modal">
+    <div class="modal-title">✍️ Create New Discussion</div>
+    <div id="post-alert" class="alert error"></div>
+    <div class="form-group">
+      <label class="form-label">Engineering Major</label>
+      <select id="post-major" class="form-input form-select" onchange="updatePostJobs()">
+        <option value="">Select major…</option>
+        <option value="cs">Computer Science / Software</option>
+        <option value="elec">Electrical Engineering</option>
+        <option value="mech">Mechanical Engineering</option>
+        <option value="civil">Civil Engineering</option>
+        <option value="chem">Chemical Engineering</option>
+        <option value="aero">Aerospace Engineering</option>
+        <option value="bio">Biomedical Engineering</option>
+        <option value="env">Environmental Engineering</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Career / Job Role</label>
+      <select id="post-job" class="form-input form-select">
+        <option value="">Select major first…</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Post Title</label>
+      <input id="post-title" class="form-input" type="text" placeholder="e.g. How to negotiate salary as a new grad SWE?">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Your Message</label>
+      <textarea id="post-body" class="composer-textarea" style="min-height:110px" placeholder="Share your experience, ask a question, or start a conversation…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeNewPostModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitNewPost()">Publish Post →</button>
+    </div>
+  </div>
+</div>
+<script src="JS/forum.js"></script>
+</body>
+</html>
