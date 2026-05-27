@@ -20,10 +20,10 @@ export default function Navbar() {
       <div className="nav-right">
         <SignedOut>
           <div style={{ display: 'flex', gap: 8 }}>
-            <SignInButton mode="redirect">
+            <SignInButton mode="modal">
               <button className="btn btn-ghost btn-sm">Sign In</button>
             </SignInButton>
-            <SignUpButton mode="redirect">
+            <SignUpButton mode="modal">
               <button className="btn btn-primary btn-sm">Join Free →</button>
             </SignUpButton>
           </div>

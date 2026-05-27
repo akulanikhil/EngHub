@@ -20,7 +20,7 @@ export default function Hero() {
         Discuss salaries, share interview experiences, and connect with professionals across every engineering discipline — all in one place.
       </p>
       <div className="hero-ctas">
-        <SignUpButton mode="redirect">
+        <SignUpButton mode="modal">
           <button className="btn btn-primary btn-lg">Join EngHub Free →</button>
         </SignUpButton>
         <a href="#demo" className="btn btn-ghost btn-lg">Watch Demo ↓</a>
