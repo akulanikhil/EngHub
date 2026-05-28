@@ -16,7 +16,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        {hasClerkKeys ? <ClerkProvider>{children}</ClerkProvider> : children}
+        {hasClerkKeys ? (
+          <ClerkProvider
+            appearance={{
+              variables: {
+                colorModalBackdrop: 'rgba(0, 0, 0, 0.4)',
+              },
+              elements: {
+                modalBackdrop: 'clerk-modal-backdrop',
+              },
+            }}
+          >
+            {children}
+          </ClerkProvider>
+        ) : (
+          children
+        )}
       </body>
     </html>
   )
