@@ -26,20 +26,30 @@ const JOBS: Record<string, string[]> = {
   env:   ['All Roles','Environmental Consult.','Water Quality Eng.','Air Quality Eng.','Remediation Eng.','Sustainability Eng.','Waste Management','Environmental Planner','Climate Engineer','Eco Systems Eng.','Green Infrastructure'],
 }
 
-async function fetchAIResponse(message: string, context?: {
-  threadTitle?: string
-  threadContent?: string
-  major?: string
-  job?: string
-}): Promise<string> {
+// Stream AI response chunk-by-chunk, calling onUpdate with the full accumulated text
+async function streamAI(
+  body: Record<string, unknown>,
+  onUpdate: (fullText: string) => void
+) {
   const r = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message, context }),
+    body: JSON.stringify(body),
   })
-  const j = await r.json()
-  if (!r.ok) return j.error || 'Sorry, the AI advisor is unavailable right now.'
-  return j.text || 'Sorry, I could not generate a response.'
+  if (!r.ok) {
+    const j = await r.json().catch(() => ({}))
+    throw new Error(j.error || 'AI request failed')
+  }
+  if (!r.body) throw new Error('No response body')
+  const reader = r.body.getReader()
+  const decoder = new TextDecoder()
+  let fullText = ''
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    fullText += decoder.decode(value, { stream: true })
+    onUpdate(fullText)
+  }
 }
 
 // ── Types ─────────────────────────────────────────────────────────
@@ -234,25 +244,35 @@ export default function ForumApp() {
   async function submitReply() {
     if (!activePostId) return
     if (aiReplyMode) {
-      const post = posts.find(p => p.id === activePostId)!
+      const postId = activePostId
+      const post = posts.find(p => p.id === postId)!
+      // Add empty placeholder comment to stream into
+      setComments(prev => ({
+        ...prev,
+        [postId]: [...(prev[postId] || []), {
+          id: `ai-${Date.now()}`, content: '', createdAt: new Date().toISOString(),
+          authorName: 'EngHub AI', authorEmail: 'ai@enghub.com', authorMajor: 'cs',
+          votes: 0, voted: false, downvoted: false, isAI: true,
+        }],
+      }))
       setReplySubmitting(true)
       try {
-        const text = await fetchAIResponse('Generate a helpful reply for this thread.', {
-          threadTitle: post.title,
-          threadContent: post.content,
-          major: post.major,
-          job: post.job,
+        await streamAI({
+          message: 'Write a helpful reply for this forum thread.',
+          context: { threadTitle: post.title, threadContent: post.content, major: post.major, job: post.job },
+        }, (fullText) => {
+          setComments(prev => {
+            const list = [...(prev[postId] || [])]
+            list[list.length - 1] = { ...list[list.length - 1], content: fullText }
+            return { ...prev, [postId]: list }
+          })
         })
-        const aiComment: DisplayComment = {
-          id: `ai-${Date.now()}`,
-          content: text,
-          createdAt: new Date().toISOString(),
-          authorName: 'EngHub AI',
-          authorEmail: 'ai@enghub.com',
-          authorMajor: 'cs',
-          votes: 0, voted: false, downvoted: false, isAI: true,
-        }
-        setComments(prev => ({ ...prev, [activePostId]: [...(prev[activePostId] || []), aiComment] }))
+      } catch {
+        setComments(prev => {
+          const list = [...(prev[postId] || [])]
+          list[list.length - 1] = { ...list[list.length - 1], content: 'Sorry, could not generate a reply.' }
+          return { ...prev, [postId]: list }
+        })
       } finally {
         setReplySubmitting(false)
       }
@@ -317,13 +337,24 @@ export default function ForumApp() {
     if (!aiInput.trim() || aiTyping) return
     const msg = aiInput.trim()
     setAiInput('')
-    setAiMessages(prev => [...prev, { role: 'user', text: msg }])
+    // Add user message + empty bot message to stream into
+    setAiMessages(prev => [...prev, { role: 'user', text: msg }, { role: 'bot', text: '' }])
     setAiTyping(true)
     try {
-      const text = await fetchAIResponse(msg)
-      setAiMessages(prev => [...prev, { role: 'bot', text }])
-    } catch {
-      setAiMessages(prev => [...prev, { role: 'bot', text: 'Sorry, I could not connect to the AI advisor.' }])
+      await streamAI({ message: msg }, (fullText) => {
+        setAiMessages(prev => {
+          const msgs = [...prev]
+          msgs[msgs.length - 1] = { role: 'bot', text: fullText }
+          return msgs
+        })
+      })
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : 'Sorry, could not connect to the AI advisor.'
+      setAiMessages(prev => {
+        const msgs = [...prev]
+        msgs[msgs.length - 1] = { role: 'bot', text: errMsg }
+        return msgs
+      })
     } finally {
       setAiTyping(false)
     }
@@ -542,15 +573,12 @@ export default function ForumApp() {
                   {aiMessages.map((m, i) => (
                     <div key={i} className={`ai-msg ${m.role}`}>
                       {m.role === 'bot' && <div className="ai-icon">AI ADVISOR</div>}
-                      <span dangerouslySetInnerHTML={{ __html: m.text.replace(/\n/g, '<br/>') }} />
+                      {m.role === 'bot' && !m.text && aiTyping && i === aiMessages.length - 1
+                        ? <div className="typing"><span></span><span></span><span></span></div>
+                        : <span dangerouslySetInnerHTML={{ __html: m.text.replace(/\n/g, '<br/>') }} />
+                      }
                     </div>
                   ))}
-                  {aiTyping && (
-                    <div className="ai-msg bot">
-                      <div className="ai-icon">AI ADVISOR</div>
-                      <div className="typing"><span></span><span></span><span></span></div>
-                    </div>
-                  )}
                 </div>
                 <div className="ai-composer">
                   <input className="ai-input" placeholder="Ask about careers, salaries, interviews…" value={aiInput} onChange={e => setAiInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') sendAIMessage() }} />

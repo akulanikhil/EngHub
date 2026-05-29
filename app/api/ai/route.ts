@@ -1,73 +1,98 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 
-const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
+const MODEL = 'gemini-3.1-flash-lite'
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse`
 
-const SYSTEM_PROMPT = `You are the EngHub AI Advisor — a friendly, knowledgeable career mentor for engineering students and professionals. You cover all disciplines: Computer Science, Electrical Engineering, Mechanical Engineering, Civil Engineering, Chemical Engineering, Aerospace Engineering, Biomedical Engineering, and Environmental Engineering.
+const SYSTEM_PROMPT = `You are the EngHub AI Advisor — a concise, sharp career mentor for engineering students and professionals across all disciplines: CS/SWE, EE, ME, Civil, ChE, Aero, BME, and EnvE.
 
-You help with:
-- Salary ranges, total compensation, and negotiation tactics
-- Interview prep (technical, behavioral, system design)
-- Career path advice, job transitions, and offer comparisons
-- Industry trends, top employers, and emerging opportunities
-- Graduate school vs. industry decisions
-- Certifications, skills to learn, and resume tips
+You help with: salaries, negotiation, interview prep, career paths, offer comparisons, industry trends, grad school decisions, and skills to build.
 
-Guidelines:
-- Be concise: 2–4 short paragraphs max
-- Be specific: use real salary figures, company names, tools, and frameworks
-- Be practical: give actionable next steps
-- Be honest: don't sugarcoat hard truths about job markets`
+Response rules (follow strictly):
+- Write exactly 2 short paragraphs. Never more.
+- Target 120–160 words total. Stop at 180.
+- Use **bold** only for key terms or company names. No bullet lists. No headers.
+- Include at least one specific number (salary, timeline, percentage, or stat).
+- End with one clear, actionable recommendation — one sentence.
+- Write like a sharp, direct colleague — not a corporate FAQ or motivational poster.`
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.GOOGLE_AI_API_KEY
   if (!apiKey) {
-    return NextResponse.json({ error: 'AI advisor not configured — add GOOGLE_AI_API_KEY to your environment.' }, { status: 503 })
+    return Response.json(
+      { error: 'AI advisor not configured — add GOOGLE_AI_API_KEY to your environment.' },
+      { status: 503 }
+    )
   }
 
   const { message, context } = await req.json()
   if (!message?.trim()) {
-    return NextResponse.json({ error: 'message is required' }, { status: 422 })
+    return Response.json({ error: 'message is required' }, { status: 422 })
   }
 
-  // Build a context-aware prompt for thread replies
+  // Build context-aware prompt for thread replies
   let userMessage = message.trim()
   if (context?.threadTitle) {
-    const parts = [
+    userMessage = [
       `Forum thread: "${context.threadTitle}"`,
-      context.threadContent ? `Post: ${context.threadContent.slice(0, 400)}` : null,
+      context.threadContent ? `Original post: ${context.threadContent.slice(0, 300)}` : null,
       context.major ? `Engineering discipline: ${context.major}` : null,
-      context.job && context.job !== 'All Roles' ? `Role focus: ${context.job}` : null,
-      `\nPlease reply as the EngHub AI Advisor with helpful, specific career advice.`,
-    ].filter(Boolean)
-    userMessage = parts.join('\n')
+      context.job && context.job !== 'All Roles' ? `Role: ${context.job}` : null,
+      `\nWrite a helpful, specific reply as the EngHub AI Advisor.`,
+    ].filter(Boolean).join('\n')
   }
 
-  try {
-    const res = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{ role: 'user', parts: [{ text: userMessage }] }],
-        generationConfig: { maxOutputTokens: 600, temperature: 0.7 },
-      }),
-    })
+  const geminiRes = await fetch(`${GEMINI_URL}&key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents: [{ role: 'user', parts: [{ text: userMessage }] }],
+      generationConfig: { maxOutputTokens: 300, temperature: 0.65 },
+    }),
+  }).catch(err => { throw new Error(`Gemini fetch failed: ${err.message}`) })
 
-    if (!res.ok) {
-      const err = await res.text()
-      console.error('[POST /api/ai] Gemini error:', err)
-      return NextResponse.json({ error: 'AI request failed' }, { status: 500 })
-    }
-
-    const data = await res.json()
-    const text: string =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ??
-      'Sorry, I could not generate a response right now.'
-
-    return NextResponse.json({ text })
-  } catch (err) {
-    console.error('[POST /api/ai] fetch error:', err)
-    return NextResponse.json({ error: 'AI advisor unavailable' }, { status: 500 })
+  if (!geminiRes.ok) {
+    const errText = await geminiRes.text()
+    console.error('[POST /api/ai] Gemini error:', errText)
+    return Response.json({ error: 'AI request failed' }, { status: 500 })
   }
+
+  // Stream SSE from Gemini → plain text chunks to client
+  const stream = new ReadableStream({
+    async start(controller) {
+      const reader = geminiRes.body!.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          buffer = lines.pop() ?? ''
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue
+            const json = line.slice(6).trim()
+            if (json === '[DONE]') { controller.close(); return }
+            try {
+              const parsed = JSON.parse(json)
+              const text: string = parsed.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+              if (text) controller.enqueue(new TextEncoder().encode(text))
+            } catch {}
+          }
+        }
+      } catch (err) {
+        console.error('[POST /api/ai] stream error:', err)
+      } finally {
+        controller.close()
+      }
+    },
+  })
+
+  return new Response(stream, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  })
 }
