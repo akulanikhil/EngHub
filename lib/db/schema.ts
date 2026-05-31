@@ -19,6 +19,7 @@ export const users = pgTable('users', {
   id:           uuid('id').primaryKey().defaultRandom(),
   clerkId:      text('clerk_id').notNull().unique(),
   email:        text('email').notNull().unique(),
+  name:         text('name'),                   // display name synced from Clerk
   major:        majorEnum('major').notNull(),
   gradYear:     integer('grad_year'),           // null for professionals
   role:         text('role'),                   // current job title
@@ -31,6 +32,8 @@ export const posts = pgTable('posts', {
   userId:     uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   title:      text('title').notNull(),
   content:    text('content').notNull(),
+  major:      majorEnum('major').notNull().default('cs'),
+  job:        text('job').notNull().default(''),
   createdAt:  timestamp('created_at').notNull().defaultNow(),
 })
 
