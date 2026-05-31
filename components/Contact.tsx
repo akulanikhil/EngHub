@@ -3,10 +3,10 @@
 import { useState } from 'react'
 
 const methods = [
-  { icon: '📧', label: 'General Inquiries',      value: 'hello@enghub.io' },
-  { icon: '🎓', label: 'University Partnerships', value: 'partnerships@enghub.io' },
-  { icon: '💼', label: 'Investors & Press',        value: 'investors@enghub.io' },
-  { icon: '📍', label: 'Based At',                 value: 'University of Kentucky, Lexington KY' },
+  { icon: '📧', label: 'General Inquiries',      value: 'mohammad.nj@uky.edu' },
+  { icon: '🎓', label: 'University Partnerships', value: 'nikhil.akula@uky.edu' },
+  { icon: '💼', label: 'Investors',               value: 'mohammad.nj@uky.edu' },
+  { icon: '📍', label: 'Based At',                value: 'University of Kentucky, Lexington KY' },
 ]
 
 export default function Contact() {

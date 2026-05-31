@@ -22,6 +22,73 @@
   --radius-sm: 8px;
 }
 
+/* ═══════════════════ LIGHT MODE VARIABLES ═══════════════════ */
+[data-theme="light"] {
+  --bg: #f4f6fb;
+  --bg2: #eaecf4;
+  --surface: #ffffff;
+  --surface2: #f0f2f9;
+  --surface3: #e4e8f2;
+  --border: #d0d6e8;
+  --border2: #b8c1db;
+  --text: #0d1120;
+  --text2: #4a5578;
+  --text3: #8896b8;
+  --accent: #3a6fd4;
+  --accent2: #2456b8;
+  --accent3: #1a3d8f;
+}
+
+[data-theme="light"] body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+[data-theme="light"] body::before { opacity: 0.15; }
+
+[data-theme="light"] .navbar {
+  background: rgba(244,246,251,0.92);
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme="light"] .footer-inner,
+[data-theme="light"] footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+}
+
+[data-theme="light"] .hero-glow-1,
+[data-theme="light"] .hero-glow-2 { opacity: 0.12; }
+
+[data-theme="light"] .card,
+[data-theme="light"] .founder-card,
+[data-theme="light"] .feature-card,
+[data-theme="light"] .major-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .form-input {
+  background: var(--surface);
+  border-color: var(--border2);
+  color: var(--text);
+}
+
+[data-theme="light"] .form-input::placeholder { color: var(--text3); }
+
+/* ═══════════════════ THEME TOGGLE BUTTON ═══════════════════ */
+.theme-toggle {
+  width: 34px; height: 34px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  color: var(--text);
+}
+.theme-toggle:hover { background: var(--surface3); border-color: var(--border2); }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {

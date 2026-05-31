@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 export default function Footer() {
   return (
     <footer>
@@ -5,8 +7,10 @@ export default function Footer() {
         <div className="footer-grid">
           <div>
             <a href="#" className="footer-logo">
-              <div className="footer-logo-mark">⚙️</div>
-              Eng<span>Hub</span>
+              <div className="footer-logo-mark">
+                <Image src="/images/logo.png" alt="EngynNation" width={22} height={22} style={{ objectFit: 'contain' }} />
+              </div>
+              Engyn<span>Nation</span>
             </a>
             <p className="footer-tagline">The career community built for every engineering major. Discuss salaries, share advice, get AI guidance.</p>
           </div>
@@ -21,18 +25,16 @@ export default function Footer() {
             <h4>Company</h4>
             <a href="#about" className="footer-link">About Us</a>
             <a href="#contact" className="footer-link">Contact</a>
-            <a href="#" className="footer-link">Press</a>
-            <a href="#" className="footer-link">Careers</a>
           </div>
           <div className="footer-col">
-            <h4>Legal</h4>
-            <a href="#" className="footer-link">Privacy Policy</a>
-            <a href="#" className="footer-link">Terms of Service</a>
-            <a href="#" className="footer-link">Cookie Policy</a>
+            <h4>Contact Us</h4>
+            <a href="mailto:nikhil.akula@uky.edu" className="footer-link">🎓 University Partnerships</a>
+            <a href="mailto:mohammad.nj@uky.edu" className="footer-link">📧 General Inquiries</a>
+            <a href="mailto:mohammad.nj@uky.edu" className="footer-link">💼 Investors</a>
           </div>
         </div>
         <div className="footer-bottom">
-          <div className="footer-copy">© 2025 EngHub. All rights reserved.</div>
+          <div className="footer-copy">© 2026 EngynNation. All rights reserved.</div>
           <div className="footer-made">Built with ❤️ at the University of Kentucky</div>
         </div>
       </div>

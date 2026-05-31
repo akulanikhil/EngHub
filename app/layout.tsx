@@ -3,7 +3,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'EngHub — Engineering Career Community',
+  title: 'EngynNation — Engineering Career Community',
   description:
     'Discuss salaries, share interview experiences, and connect with professionals across every engineering discipline.',
 }

@@ -1,14 +1,18 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import ThemeToggle from './ThemeToggle'
 
 export default function Navbar() {
   return (
     <nav className="navbar">
       <Link href="/" className="nav-logo">
-        <div className="nav-logo-mark">⚙️</div>
-        Eng<span>Hub</span>
+        <div className="nav-logo-mark">
+          <Image src="/images/logo.png" alt="EngynNation" width={28} height={28} style={{ objectFit: 'contain' }} />
+        </div>
+        Engyn<span>Nation</span>
       </Link>
       <div className="nav-links">
         <a href="#demo" className="nav-link">Demo</a>
@@ -18,6 +22,7 @@ export default function Navbar() {
         <a href="#contact" className="nav-link">Contact</a>
       </div>
       <div className="nav-right">
+          <ThemeToggle />
         <SignedOut>
           <div style={{ display: 'flex', gap: 8 }}>
             <SignInButton mode="modal">
