@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useUser } from '@clerk/nextjs'
+import ThemeToggle from '@/components/ThemeToggle'
 
 // ── Static data ────────────────────────────────────────────────────
 const MAJORS: Record<string, { label: string; short: string; colorClass: string }> = {
@@ -421,6 +422,7 @@ export default function ForumApp() {
               <div className={`topbar-major-badge f-badge ${MAJORS[currentMajor]?.colorClass}`}>{MAJORS[currentMajor]?.short}</div>
             )}
             <div className="topbar-actions">
+              <ThemeToggle />
               <button className="f-btn f-btn-sm f-btn-ai" onClick={() => setAiPanelOpen(o => !o)}>🤖 AI Advisor</button>
               <button className="f-btn f-btn-sm f-btn-ghost" onClick={() => setNewPostModal(true)}>+ New Post</button>
             </div>

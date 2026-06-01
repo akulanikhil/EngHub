@@ -76,6 +76,52 @@
 
 [data-theme="light"] .form-input::placeholder { color: var(--text3); }
 
+/* ── Forum light mode overrides ── */
+[data-theme="light"] .forum-root { background: var(--bg); }
+
+[data-theme="light"] .topbar {
+  background: rgba(244,246,251,0.95);
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme="light"] .forum-sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+
+[data-theme="light"] .thread-item:hover { background: var(--surface2); }
+[data-theme="light"] .thread-item.active { background: var(--surface2); }
+
+[data-theme="light"] .thread-view-panel,
+[data-theme="light"] .thread-list-panel { background: var(--bg); }
+
+[data-theme="light"] .msg-block { background: var(--surface); border-color: var(--border); }
+
+[data-theme="light"] .ai-panel { background: var(--surface); border-left: 1px solid var(--border); }
+[data-theme="light"] .ai-panel-header { border-bottom: 1px solid var(--border); }
+
+[data-theme="light"] .ai-msg { background: var(--surface2); }
+[data-theme="light"] .ai-msg.user { background: var(--surface3); }
+
+[data-theme="light"] .forum-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.15);
+}
+
+[data-theme="light"] .reply-box { background: var(--surface); border-top: 1px solid var(--border); }
+[data-theme="light"] .reply-input { background: var(--surface2); border-color: var(--border2); color: var(--text); }
+
+[data-theme="light"] .major-btn { color: var(--text2); }
+[data-theme="light"] .major-btn:hover,
+[data-theme="light"] .major-btn.active { background: var(--surface2); color: var(--text); }
+
+[data-theme="light"] .panel-header { background: var(--surface); border-bottom: 1px solid var(--border); }
+[data-theme="light"] .f-input { background: var(--surface2); border-color: var(--border); color: var(--text); }
+[data-theme="light"] .f-input::placeholder { color: var(--text3); }
+
+[data-theme="light"] .sidebar-actions { border-top: 1px solid var(--border); }
+
 /* ═══════════════════ THEME TOGGLE BUTTON ═══════════════════ */
 .theme-toggle {
   width: 34px; height: 34px;

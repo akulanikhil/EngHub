@@ -6,11 +6,32 @@ export default function ThemeToggle() {
   const [light, setLight] = useState(false)
 
   useEffect(() => {
+    // Check localStorage first; fall back to device preference
     const saved = localStorage.getItem('theme')
-    if (saved === 'light') {
-      setLight(true)
+    const prefersLight =
+      saved === 'light' ||
+      (saved === null && window.matchMedia('(prefers-color-scheme: light)').matches)
+
+    setLight(prefersLight)
+    if (prefersLight) {
       document.documentElement.setAttribute('data-theme', 'light')
+    } else {
+      document.documentElement.removeAttribute('data-theme')
     }
+
+    // Listen for OS-level changes only if the user hasn't set a manual preference
+    const mq = window.matchMedia('(prefers-color-scheme: light)')
+    const handler = (e: MediaQueryListEvent) => {
+      if (localStorage.getItem('theme') !== null) return // manual override wins
+      setLight(e.matches)
+      if (e.matches) {
+        document.documentElement.setAttribute('data-theme', 'light')
+      } else {
+        document.documentElement.removeAttribute('data-theme')
+      }
+    }
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
   }, [])
 
   function toggle() {
