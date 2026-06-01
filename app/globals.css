@@ -129,7 +129,7 @@ body::before {
   letter-spacing: -1px; text-decoration: none; color: var(--text);
 }
 .nav-logo-mark {
-  width: 42px; height: 42px;
+  width: 52px; height: 52px;
   background: transparent;
   border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
@@ -464,7 +464,7 @@ footer { border-top: 1px solid var(--border); padding: 48px 40px 32px; }
 .forum-sidebar { width: 260px; min-width: 260px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
 .sidebar-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
 .sidebar-logo { display: flex; align-items: center; gap: 10px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; margin-bottom: 12px; }
-.sidebar-logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.sidebar-logo-icon { width: 44px; height: 44px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .sidebar-logo span { color: var(--accent); }
 .user-chip { display: flex; align-items: center; gap: 9px; padding: 8px 10px; background: var(--surface2); border-radius: 6px; cursor: pointer; }
 .f-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; flex-shrink: 0; }

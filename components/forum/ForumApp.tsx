@@ -251,7 +251,7 @@ export default function ForumApp() {
         ...prev,
         [postId]: [...(prev[postId] || []), {
           id: `ai-${Date.now()}`, content: '', createdAt: new Date().toISOString(),
-          authorName: 'EngHub AI', authorEmail: 'ai@enghub.com', authorMajor: 'cs',
+          authorName: 'EngyNation AI', authorEmail: 'ai@engynation.com', authorMajor: 'cs',
           votes: 0, voted: false, downvoted: false, isAI: true,
         }],
       }))
@@ -384,8 +384,11 @@ export default function ForumApp() {
         <nav className="forum-sidebar">
           <div className="sidebar-header">
             <div className="sidebar-logo">
-              <div className="sidebar-logo-icon">⚙️</div>
-              Eng<span>Hub</span>
+              <div className="sidebar-logo-icon">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/logo.png" alt="EngyNation" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              </div>
+              Engy<span>Nation</span>
             </div>
             <div className="user-chip">
               <div className="f-avatar">{myInitials}</div>
@@ -524,7 +527,7 @@ export default function ForumApp() {
                             {c.isAI ? '🤖' : initials(displayName(c.authorName, c.authorEmail))}
                           </div>
                           <div>
-                            <div className="msg-username">{c.isAI ? 'EngHub AI' : displayName(c.authorName, c.authorEmail)}</div>
+                            <div className="msg-username">{c.isAI ? 'EngyNation AI' : displayName(c.authorName, c.authorEmail)}</div>
                             {c.isAI && <div className="msg-role ai">AI Advisor</div>}
                           </div>
                           <span className="msg-time">{timeAgo(c.createdAt)}</span>
@@ -566,7 +569,7 @@ export default function ForumApp() {
               <div className="ai-panel">
                 <div className="ai-panel-header">
                   <span style={{ fontSize: 16 }}>🤖</span>
-                  <span className="ai-panel-title">EngHub AI Advisor</span>
+                  <span className="ai-panel-title">EngyNation AI Advisor</span>
                   <button className="ai-close" onClick={() => setAiPanelOpen(false)}>✕</button>
                 </div>
                 <div className="ai-chat-scroll" ref={aiScrollRef}>
