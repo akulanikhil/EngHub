@@ -77,10 +77,26 @@
 [data-theme="light"] .form-input::placeholder { color: var(--text3); }
 
 /* ── Forum light mode overrides ── */
-[data-theme="light"] .forum-root { background: var(--bg); }
+/* .forum-root re-declares its own CSS variables, so we must override them here */
+[data-theme="light"] .forum-root {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --surface2: #f0f2f9;
+  --surface3: #e4e8f2;
+  --border: #d0d6e8;
+  --border2: #b8c1db;
+  --text: #0d1120;
+  --text2: #4a5578;
+  --text3: #8896b8;
+  --accent: #3a6fd4;
+  --accent2: #2456b8;
+  --accent-glow: rgba(58,111,212,0.12);
+  background: var(--bg);
+  color: var(--text);
+}
 
 [data-theme="light"] .topbar {
-  background: rgba(244,246,251,0.95);
+  background: rgba(244,246,251,0.97) !important;
   border-bottom: 1px solid var(--border);
 }
 
