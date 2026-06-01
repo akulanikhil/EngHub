@@ -16,6 +16,8 @@ interface ClerkUserCreatedEvent {
   type: 'user.created' | 'user.updated' | 'user.deleted'
   data: {
     id: string
+    first_name?: string | null
+    last_name?: string | null
     email_addresses: ClerkEmailAddress[]
     primary_email_address_id: string
     public_metadata: {
@@ -64,9 +66,12 @@ export async function POST(req: NextRequest) {
     const major = (data.public_metadata?.major ?? 'cs') as
       | 'cs' | 'elec' | 'mech' | 'civil' | 'chem' | 'aero' | 'bio' | 'env'
 
+    const name = [data.first_name, data.last_name].filter(Boolean).join(' ') || null
+
     await db.insert(users).values({
       clerkId:  data.id,
       email:    primaryEmail,
+      name,
       major,
       gradYear: data.public_metadata?.grad_year ?? null,
       role:     data.public_metadata?.role ?? null,
@@ -76,17 +81,17 @@ export async function POST(req: NextRequest) {
   }
 
   if (type === 'user.updated') {
+    const name = [data.first_name, data.last_name].filter(Boolean).join(' ') || null
     const { major, grad_year, role } = data.public_metadata ?? {}
-    if (major) {
-      await db
-        .update(users)
-        .set({
-          major: major as typeof users.$inferInsert['major'],
-          gradYear: grad_year ?? null,
-          role: role ?? null,
-        })
-        .where(eq(users.clerkId, data.id))
-    }
+    await db
+      .update(users)
+      .set({
+        name,
+        ...(major ? { major: major as typeof users.$inferInsert['major'] } : {}),
+        gradYear: grad_year ?? null,
+        role: role ?? null,
+      })
+      .where(eq(users.clerkId, data.id))
   }
 
   if (type === 'user.deleted') {
