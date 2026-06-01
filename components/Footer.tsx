@@ -8,9 +8,9 @@ export default function Footer() {
           <div>
             <a href="#" className="footer-logo">
               <div className="footer-logo-mark">
-                <Image src="/images/logo.png" alt="EngynNation" width={22} height={22} style={{ objectFit: 'contain' }} />
+                <Image src="/images/logo.png" alt="EngyNation" width={28} height={28} style={{ objectFit: 'contain' }} />
               </div>
-              Engyn<span>Nation</span>
+              Engy<span>Nation</span>
             </a>
             <p className="footer-tagline">The career community built for every engineering major. Discuss salaries, share advice, get AI guidance.</p>
           </div>
@@ -34,7 +34,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <div className="footer-copy">© 2026 EngynNation. All rights reserved.</div>
+          <div className="footer-copy">© 2026 EngyNation. All rights reserved.</div>
           <div className="footer-made">Built with ❤️ at the University of Kentucky</div>
         </div>
       </div>

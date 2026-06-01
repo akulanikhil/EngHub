@@ -21,7 +21,7 @@ export default function Hero() {
       </p>
       <div className="hero-ctas">
         <SignUpButton mode="modal">
-          <button className="btn btn-primary btn-lg">Join EngynNation Free →</button>
+          <button className="btn btn-primary btn-lg">Join EngyNation Free →</button>
         </SignUpButton>
         <a href="#demo" className="btn btn-ghost btn-lg">Watch Demo ↓</a>
       </div>

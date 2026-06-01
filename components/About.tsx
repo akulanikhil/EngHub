@@ -13,7 +13,7 @@ const founders = [
   {
     name: 'Mohammad Najarzadegan',
     role: 'Co-Founder & CEO',
-    bio: 'Mohammad is a Finance & Accounting student at the University of Kentucky with a passion for entrepreneurship and community building. As CEO, he identified the gap in engineering career resources and took EngynNation from a whiteboard idea to a live platform used by students across disciplines.',
+    bio: 'Mohammad is a Finance & Accounting student at the University of Kentucky with a passion for entrepreneurship and community building. As CEO, he identified the gap in engineering career resources and took EngyNation from a whiteboard idea to a live platform used by students across disciplines.',
     img: '/images/Mnajarzadegan.jpg',
     linkedin: 'https://www.linkedin.com/in/mohammad-nj/',
     email: 'mailto:mohammad.nj@uky.edu',
@@ -21,7 +21,7 @@ const founders = [
   {
     name: 'Henry Moore',
     role: 'Co-Founder & CFO',
-    bio: 'Henry is a Finance & Accounting student at the University of Kentucky who brings financial strategy and operational discipline to EngynNation. As CFO, he oversees the business foundation and growth strategy that keeps the platform built for students first.',
+    bio: 'Henry is a Finance & Accounting student at the University of Kentucky who brings financial strategy and operational discipline to EngyNation. As CFO, he oversees the business foundation and growth strategy that keeps the platform built for students first.',
     img: '/images/HMoore.jpg',
     linkedin: 'https://www.linkedin.com/in/henry-moore-143541329/',
     email: 'mailto:henry.moore@uky.edu',
@@ -29,7 +29,7 @@ const founders = [
   {
     name: 'Nikhil Akula',
     role: 'Co-Founder & CTO',
-    bio: 'Nikhil is a Computer Science & Finance student at the University of Kentucky who designed and built the entire EngynNation platform — from the real-time forum and salary intelligence tools to the built-in AI career advisor. He turns the vision into working software.',
+    bio: 'Nikhil is a Computer Science & Finance student at the University of Kentucky who designed and built the entire EngyNation platform — from the real-time forum and salary intelligence tools to the built-in AI career advisor. He turns the vision into working software.',
     img: '/images/nakula.jpg',
     linkedin: 'https://www.linkedin.com/in/akulan/',
     email: 'mailto:nikhil.akula@uky.edu',
@@ -40,14 +40,14 @@ export default function About() {
   return (
     <section className="section" id="about">
       <div className="section-inner">
-        <div className="section-label">About EngynNation</div>
+        <div className="section-label">About EngyNation</div>
         <h2 className="section-title">Built by engineers,<br />for engineers</h2>
 
         <div className="story-grid">
           <div className="story-text">
             <p>We&apos;re a team of students at the <strong>University of Kentucky</strong> who got tired of having nowhere to talk honestly about engineering careers. Wall Street Oasis exists for finance. Blind exists for big tech. <strong>But what about the civil engineer trying to negotiate their first salary? Or the biomedical engineer deciding between med-tech and a PhD?</strong></p>
-            <p>EngynNation was born out of that frustration. We wanted a place where engineering students and professionals could have the kind of <strong>candid, specific conversations</strong> that actually help — organized by major, broken down by career track, and enhanced by AI.</p>
-            <p>We&apos;re in early beta and growing. <strong>Join us and help shape what EngynNation becomes.</strong></p>
+            <p>EngyNation was born out of that frustration. We wanted a place where engineering students and professionals could have the kind of <strong>candid, specific conversations</strong> that actually help — organized by major, broken down by career track, and enhanced by AI.</p>
+            <p>We&apos;re in early beta and growing. <strong>Join us and help shape what EngyNation becomes.</strong></p>
           </div>
           <div className="story-visual">
             <div className="story-stat-row">
@@ -65,7 +65,7 @@ export default function About() {
 
         <div style={{ marginTop: 80 }}>
           <div className="section-label">Meet the Founders</div>
-          <h2 className="section-title" style={{ marginBottom: 8 }}>The team behind<br />EngynNation</h2>
+          <h2 className="section-title" style={{ marginBottom: 8 }}>The team behind<br />EngyNation</h2>
           <p style={{ color: 'var(--text2)', fontSize: 16, fontWeight: 300, marginBottom: 0 }}>Three University of Kentucky students who decided to build the community they always needed.</p>
         </div>
 

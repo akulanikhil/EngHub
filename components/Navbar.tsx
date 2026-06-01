@@ -10,9 +10,9 @@ export default function Navbar() {
     <nav className="navbar">
       <Link href="/" className="nav-logo">
         <div className="nav-logo-mark">
-          <Image src="/images/logo.png" alt="EngynNation" width={28} height={28} style={{ objectFit: 'contain' }} />
+          <Image src="/images/logo.png" alt="EngyNation" width={36} height={36} style={{ objectFit: 'contain' }} />
         </div>
-        Engyn<span>Nation</span>
+        Engy<span>Nation</span>
       </Link>
       <div className="nav-links">
         <a href="#demo" className="nav-link">Demo</a>
