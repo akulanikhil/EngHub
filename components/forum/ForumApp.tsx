@@ -261,9 +261,25 @@ export default function ForumApp() {
       setComments(prev => ({ ...prev, [postId]: [...(prev[postId]||[]), { id:`ai-${Date.now()}`, content:'', createdAt: new Date().toISOString(), authorId:'ai', authorName:'EngyNation AI', authorEmail:'ai@engynation.com', authorMajor:'cs', votes:0, voted:false, downvoted:false, isAI:true }] }))
       setReplySubmitting(true)
       try {
+        let finalText = ''
         await streamAI({ message:'Write a helpful reply for this forum thread.', context:{ threadTitle:post.title, threadContent:post.content, major:post.major, job:post.job } }, (fullText) => {
+          finalText = fullText
           setComments(prev => { const list=[...(prev[postId]||[])]; list[list.length-1]={...list[list.length-1],content:fullText}; return {...prev,[postId]:list} })
         })
+        // Persist the AI reply to the database so it survives a refresh
+        if (finalText.trim()) {
+          const r = await fetch(`/api/posts/${postId}/comments`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ content: finalText.trim() }) })
+          if (r.ok) {
+            const j = await r.json()
+            // Swap the temp local id for the real DB id, keep isAI flag for this session
+            setComments(prev => {
+              const list = [...(prev[postId]||[])]
+              list[list.length-1] = { ...list[list.length-1], id: j.data.id, createdAt: j.data.createdAt }
+              return { ...prev, [postId]: list }
+            })
+            setPosts(prev => prev.map(p => p.id === postId ? { ...p, commentCount: p.commentCount+1 } : p))
+          }
+        }
       } catch {
         setComments(prev => { const list=[...(prev[postId]||[])]; list[list.length-1]={...list[list.length-1],content:'Sorry, could not generate a reply.'}; return {...prev,[postId]:list} })
       } finally { setReplySubmitting(false) }
