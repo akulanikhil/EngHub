@@ -13,11 +13,11 @@ const hasClerkKeys =
   !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.includes('placeholder')
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const content = (
+  return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {hasClerkKeys ? <ClerkProvider>{children}</ClerkProvider> : children}
+      </body>
     </html>
   )
-
-  return hasClerkKeys ? <ClerkProvider>{content}</ClerkProvider> : content
 }
