@@ -5,6 +5,7 @@ import {
   text,
   integer,
   numeric,
+  boolean,
   timestamp,
 } from 'drizzle-orm/pg-core'
 
@@ -42,6 +43,7 @@ export const comments = pgTable('comments', {
   postId:     uuid('post_id').notNull().references(() => posts.id, { onDelete: 'cascade' }),
   userId:     uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   content:    text('content').notNull(),
+  isAi:       boolean('is_ai').notNull().default(false),
   createdAt:  timestamp('created_at').notNull().defaultNow(),
 })
 

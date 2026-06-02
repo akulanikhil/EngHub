@@ -15,6 +15,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
     .select({
       id:          comments.id,
       content:     comments.content,
+      isAi:        comments.isAi,
       createdAt:   comments.createdAt,
       authorId:    users.id,
       authorName:  users.name,
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest, { params }: Params) {
   if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id: postId } = await params
-  const { content } = await req.json()
+  const { content, isAi = false } = await req.json()
 
   if (!content?.trim())
     return NextResponse.json({ error: 'content is required' }, { status: 422 })
@@ -49,8 +50,8 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   const [inserted] = await db
     .insert(comments)
-    .values({ postId, userId: user.id, content: content.trim() })
-    .returning({ id: comments.id, content: comments.content, createdAt: comments.createdAt })
+    .values({ postId, userId: user.id, content: content.trim(), isAi: Boolean(isAi) })
+    .returning({ id: comments.id, content: comments.content, isAi: comments.isAi, createdAt: comments.createdAt })
 
   return NextResponse.json({ data: inserted }, { status: 201 })
 }

@@ -64,7 +64,7 @@ interface ApiPost {
 interface DisplayPost extends ApiPost { votes: number; voted: boolean }
 
 interface ApiComment {
-  id: string; content: string; createdAt: string
+  id: string; content: string; isAi: boolean; createdAt: string
   authorId: string; authorName: string | null; authorEmail: string; authorMajor: string
 }
 interface DisplayComment extends ApiComment {
@@ -203,7 +203,7 @@ export default function ForumApp() {
     try {
       const r = await fetch(`/api/posts/${postId}/comments`)
       const j = await r.json()
-      setComments(prev => ({ ...prev, [postId]: (j.data ?? []).map((c: ApiComment) => ({ ...c, votes: 0, voted: false, downvoted: false })) }))
+      setComments(prev => ({ ...prev, [postId]: (j.data ?? []).map((c: ApiComment) => ({ ...c, votes: 0, voted: false, downvoted: false, isAI: c.isAi })) }))
     } finally { setCommentsLoading(false) }
   }
 
@@ -258,7 +258,7 @@ export default function ForumApp() {
     if (aiReplyMode) {
       const postId = activePostId
       const post = posts.find(p => p.id === postId)!
-      setComments(prev => ({ ...prev, [postId]: [...(prev[postId]||[]), { id:`ai-${Date.now()}`, content:'', createdAt: new Date().toISOString(), authorId:'ai', authorName:'EngyNation AI', authorEmail:'ai@engynation.com', authorMajor:'cs', votes:0, voted:false, downvoted:false, isAI:true }] }))
+      setComments(prev => ({ ...prev, [postId]: [...(prev[postId]||[]), { id:`ai-${Date.now()}`, content:'', isAi:true, createdAt: new Date().toISOString(), authorId:'ai', authorName:'EngyNation AI', authorEmail:'ai@engynation.com', authorMajor:'cs', votes:0, voted:false, downvoted:false, isAI:true }] }))
       setReplySubmitting(true)
       try {
         let finalText = ''
@@ -268,7 +268,7 @@ export default function ForumApp() {
         })
         // Persist the AI reply to the database so it survives a refresh
         if (finalText.trim()) {
-          const r = await fetch(`/api/posts/${postId}/comments`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ content: finalText.trim() }) })
+          const r = await fetch(`/api/posts/${postId}/comments`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ content: finalText.trim(), isAi: true }) })
           if (r.ok) {
             const j = await r.json()
             // Swap the temp local id for the real DB id, keep isAI flag for this session
