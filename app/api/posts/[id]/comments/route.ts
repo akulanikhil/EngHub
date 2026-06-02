@@ -16,6 +16,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
       id:          comments.id,
       content:     comments.content,
       createdAt:   comments.createdAt,
+      authorId:    users.id,
       authorName:  users.name,
       authorEmail: users.email,
       authorMajor: users.major,

@@ -603,6 +603,13 @@ footer { border-top: 1px solid var(--border); padding: 48px 40px 32px; }
 .vote-btn.down.voted { color: var(--red); border-color: var(--red); background: var(--red-dim); }
 .reply-btn { font-size: 13px; color: var(--text3); background: transparent; border: none; cursor: pointer; padding: 5px 8px; transition: color 0.15s; font-family: 'DM Sans', sans-serif; }
 .reply-btn:hover { color: var(--text); }
+.msg-owner-actions { display: flex; gap: 4px; margin-left: auto; opacity: 0; transition: opacity 0.15s; }
+.message-card:hover .msg-owner-actions { opacity: 1; }
+.owner-btn { background: none; border: none; cursor: pointer; font-size: 13px; padding: 2px 5px; border-radius: 4px; color: var(--text3); transition: background 0.15s; }
+.owner-btn:hover { background: var(--surface2); color: var(--text); }
+.edit-box { margin: 8px 0; }
+.thread-delete-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 2px 5px; border-radius: 4px; color: var(--text3); opacity: 0; transition: opacity 0.15s; margin-left: 4px; }
+.thread-item:hover .thread-delete-btn { opacity: 1; }
 
 /* ── COMPOSER ── */
 .composer { border-top: 1px solid var(--border); padding: 18px 28px; flex-shrink: 0; background: var(--surface); }

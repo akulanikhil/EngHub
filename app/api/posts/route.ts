@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
       major:        posts.major,
       job:          posts.job,
       createdAt:    posts.createdAt,
+      authorId:     users.id,
       authorName:   users.name,
       authorEmail:  users.email,
       authorMajor:  users.major,
