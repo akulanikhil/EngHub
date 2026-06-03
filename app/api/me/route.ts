@@ -12,7 +12,7 @@ export async function GET() {
   await ensureUser(clerkId)
 
   const [user] = await db
-    .select({ id: users.id, major: users.major, name: users.name, email: users.email })
+    .select({ id: users.id, major: users.major, name: users.name, username: users.username, imageUrl: users.imageUrl, email: users.email })
     .from(users)
     .where(eq(users.clerkId, clerkId))
     .limit(1)

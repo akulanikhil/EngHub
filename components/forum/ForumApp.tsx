@@ -58,20 +58,22 @@ async function streamAI(body: Record<string, unknown>, onUpdate: (fullText: stri
 // ── Types ─────────────────────────────────────────────────────────
 interface ApiPost {
   id: string; title: string; content: string; major: string; job: string
-  createdAt: string; authorId: string; authorName: string | null
-  authorEmail: string; authorMajor: string; commentCount: number
+  createdAt: string; authorId: string; authorUsername: string | null
+  authorName: string | null; authorImageUrl: string | null
+  authorEmail: string; authorMajor: string | null; commentCount: number
 }
 interface DisplayPost extends ApiPost { votes: number; voted: boolean }
 
 interface ApiComment {
   id: string; content: string; isAi: boolean; createdAt: string
-  authorId: string; authorName: string | null; authorEmail: string; authorMajor: string
+  authorId: string; authorUsername: string | null; authorName: string | null
+  authorImageUrl: string | null; authorEmail: string; authorMajor: string | null
 }
 interface DisplayComment extends ApiComment {
   votes: number; voted: boolean; downvoted: boolean; isAI?: boolean
 }
 
-interface MeData { id: string; major: string; name: string | null; email: string }
+interface MeData { id: string; major: string | null; username: string | null; name: string | null; imageUrl: string | null; email: string }
 
 // ── Helpers ────────────────────────────────────────────────────────
 function majorColor(m: string) {
@@ -90,8 +92,25 @@ function timeAgo(dateStr: string) {
   if (hrs < 24) return `${hrs}h ago`
   return `${Math.floor(hrs / 24)}d ago`
 }
-function displayName(name: string | null, email: string) { return name || email.split('@')[0] }
+function displayName(username: string | null, name: string | null, email: string) {
+  return username || name || email.split('@')[0]
+}
 function initials(name: string) { return name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2) }
+
+// Render avatar: real photo if available, otherwise coloured initials
+function Avatar({ imageUrl, name, color, size = 28 }: { imageUrl?: string | null; name: string; color: string; size?: number }) {
+  if (imageUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={imageUrl} alt={name} style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+    )
+  }
+  return (
+    <div className="f-avatar" style={{ background: color, width: size, height: size, fontSize: size * 0.36 }}>
+      {initials(name)}
+    </div>
+  )
+}
 
 // ── Component ──────────────────────────────────────────────────────
 export default function ForumApp() {
@@ -258,7 +277,7 @@ export default function ForumApp() {
     if (aiReplyMode) {
       const postId = activePostId
       const post = posts.find(p => p.id === postId)!
-      setComments(prev => ({ ...prev, [postId]: [...(prev[postId]||[]), { id:`ai-${Date.now()}`, content:'', isAi:true, createdAt: new Date().toISOString(), authorId:'ai', authorName:'EngyNation AI', authorEmail:'ai@engynation.com', authorMajor:'cs', votes:0, voted:false, downvoted:false, isAI:true }] }))
+      setComments(prev => ({ ...prev, [postId]: [...(prev[postId]||[]), { id:`ai-${Date.now()}`, content:'', isAi:true, createdAt: new Date().toISOString(), authorId:'ai', authorUsername:null, authorName:'EngyNation AI', authorImageUrl:null, authorEmail:'ai@engynation.com', authorMajor:null, votes:0, voted:false, downvoted:false, isAI:true }] }))
       setReplySubmitting(true)
       try {
         let finalText = ''
@@ -291,7 +310,7 @@ export default function ForumApp() {
       const r = await fetch(`/api/posts/${activePostId}/comments`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content:replyText.trim()}) })
       if (!r.ok) return
       const j = await r.json()
-      const newComment: DisplayComment = { ...j.data, authorId: meData?.id ?? '', authorName:meData?.name??null, authorEmail:meData?.email??'', authorMajor:meData?.major??'cs', votes:0, voted:false, downvoted:false }
+      const newComment: DisplayComment = { ...j.data, authorId: meData?.id ?? '', authorUsername: meData?.username??null, authorName:meData?.name??null, authorImageUrl:meData?.imageUrl??null, authorEmail:meData?.email??'', authorMajor:meData?.major??null, votes:0, voted:false, downvoted:false }
       setComments(prev => ({ ...prev, [activePostId]: [...(prev[activePostId]||[]), newComment] }))
       setPosts(prev => prev.map(p => p.id === activePostId ? { ...p, commentCount: p.commentCount+1 } : p))
       setReplyText('')
@@ -333,8 +352,9 @@ export default function ForumApp() {
     )
   }
 
-  const myName     = user ? (user.fullName || user.primaryEmailAddress?.emailAddress || 'You') : 'You'
-  const myMajor    = meData?.major ?? 'cs'
+  const myName     = meData?.username || user?.fullName || user?.primaryEmailAddress?.emailAddress || 'You'
+  const myMajor    = meData?.major ?? null
+  const myImageUrl = meData?.imageUrl ?? user?.imageUrl ?? null
   const myInitials = initials(myName)
   const activePost = activePostId ? posts.find(p => p.id === activePostId) : null
   const threadComments = activePostId ? (comments[activePostId] || []) : []
@@ -356,10 +376,10 @@ export default function ForumApp() {
               Engy<span>Nation</span>
             </Link>
             <div className="user-chip">
-              <div className="f-avatar">{myInitials}</div>
+              <Avatar imageUrl={myImageUrl} name={myName} color={majorColor(myMajor ?? 'cs')} size={32} />
               <div>
                 <div className="avatar-name">{myName}</div>
-                <div className="avatar-major">{MAJORS[myMajor]?.label ?? 'General'}</div>
+                <div className="avatar-major">{myMajor ? (MAJORS[myMajor]?.label ?? 'General') : 'General'}</div>
               </div>
             </div>
           </div>
@@ -424,7 +444,7 @@ export default function ForumApp() {
                   <>
                     {filteredPosts.map(p => {
                       const m = MAJORS[p.major] ?? MAJORS.cs
-                      const author = displayName(p.authorName, p.authorEmail)
+                      const author = displayName(p.authorUsername, p.authorName, p.authorEmail)
                       return (
                         <div key={p.id} className={`thread-item${activePostId===p.id?' active':''}`} onClick={()=>openThread(p.id)}>
                           <div className="thread-meta">
@@ -438,7 +458,7 @@ export default function ForumApp() {
                             <span className="thread-stat" style={{ cursor:'pointer' }} onClick={e=>{ e.stopPropagation(); votePost(p.id) }}>▲ {p.votes}</span>
                             <span className="thread-stat">💬 {p.commentCount}</span>
                             <div className="thread-author">
-                              <div className="thread-author-avatar" style={{ background:majorColor(p.authorMajor) }}>{initials(author)}</div>
+                              <Avatar imageUrl={p.authorImageUrl} name={author} color={majorColor(p.authorMajor ?? 'cs')} size={20} />
                               <span className="thread-author-name">{author}</span>
                             </div>
                             {isMyPost(p) && (
@@ -478,7 +498,7 @@ export default function ForumApp() {
                         <span className="f-badge" style={{ background:'var(--surface2)', color:'var(--text2)' }}>{activePost.job}</span>
                       )}
                       <span style={{ fontSize:12.5, color:'var(--text3)', marginLeft:'auto' }}>
-                        Posted by {displayName(activePost.authorName, activePost.authorEmail)} · {timeAgo(activePost.createdAt)} · {activePost.votes} votes
+                        Posted by {displayName(activePost.authorUsername, activePost.authorName, activePost.authorEmail)} · {timeAgo(activePost.createdAt)} · {activePost.votes} votes
                       </span>
                     </div>
                   </div>
@@ -486,11 +506,9 @@ export default function ForumApp() {
                     {/* Original post body */}
                     <div className="message-card">
                       <div className="msg-header">
-                        <div className="f-avatar" style={{ background:majorColor(activePost.authorMajor) }}>
-                          {initials(displayName(activePost.authorName, activePost.authorEmail))}
-                        </div>
+                        <Avatar imageUrl={activePost.authorImageUrl} name={displayName(activePost.authorUsername, activePost.authorName, activePost.authorEmail)} color={majorColor(activePost.authorMajor ?? 'cs')} />
                         <div>
-                          <div className="msg-username">{displayName(activePost.authorName, activePost.authorEmail)}</div>
+                          <div className="msg-username">{displayName(activePost.authorUsername, activePost.authorName, activePost.authorEmail)}</div>
                         </div>
                         <span className="msg-time">{timeAgo(activePost.createdAt)}</span>
                         {isMyPost(activePost) && (
@@ -522,11 +540,12 @@ export default function ForumApp() {
                     ) : threadComments.map((c, idx) => (
                       <div key={c.id} className={`message-card${c.isAI?' ai-card':''}`}>
                         <div className="msg-header">
-                          <div className="f-avatar" style={{ background:c.isAI?'#4f8ef7':majorColor(c.authorMajor) }}>
-                            {c.isAI ? '🤖' : initials(displayName(c.authorName, c.authorEmail))}
-                          </div>
+                          {c.isAI
+                            ? <div className="f-avatar" style={{ background:'#4f8ef7' }}>🤖</div>
+                            : <Avatar imageUrl={c.authorImageUrl} name={displayName(c.authorUsername, c.authorName, c.authorEmail)} color={majorColor(c.authorMajor ?? 'cs')} />
+                          }
                           <div>
-                            <div className="msg-username">{c.isAI ? 'EngyNation AI' : displayName(c.authorName, c.authorEmail)}</div>
+                            <div className="msg-username">{c.isAI ? 'EngyNation AI' : displayName(c.authorUsername, c.authorName, c.authorEmail)}</div>
                             {c.isAI && <div className="msg-role ai">AI Advisor</div>}
                           </div>
                           <span className="msg-time">{timeAgo(c.createdAt)}</span>
@@ -560,7 +579,7 @@ export default function ForumApp() {
                   </div>
                   <div className="composer">
                     <div className="composer-header">
-                      <div className="f-avatar">{myInitials}</div>
+                      <Avatar imageUrl={myImageUrl} name={myName} color={majorColor(myMajor ?? 'cs')} />
                       <span className="composer-label">Add your reply</span>
                       <div className="composer-ai-toggle">
                         <span style={{ fontSize:12 }}>🤖 AI Reply</span>

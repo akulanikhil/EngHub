@@ -26,10 +26,12 @@ export async function GET(req: NextRequest) {
       major:        posts.major,
       job:          posts.job,
       createdAt:    posts.createdAt,
-      authorId:     users.id,
-      authorName:   users.name,
-      authorEmail:  users.email,
-      authorMajor:  users.major,
+      authorId:       users.id,
+      authorUsername: users.username,
+      authorName:     users.name,
+      authorImageUrl: users.imageUrl,
+      authorEmail:    users.email,
+      authorMajor:    users.major,
       commentCount: sql<number>`(SELECT COUNT(*) FROM ${comments} WHERE ${comments.postId} = ${posts.id})::int`,
     })
     .from(posts)

@@ -20,8 +20,10 @@ export const users = pgTable('users', {
   id:           uuid('id').primaryKey().defaultRandom(),
   clerkId:      text('clerk_id').notNull().unique(),
   email:        text('email').notNull().unique(),
+  username:     text('username'),               // Clerk username (optional)
   name:         text('name'),                   // display name synced from Clerk
-  major:        majorEnum('major').notNull(),
+  imageUrl:     text('image_url'),              // Clerk profile photo URL
+  major:        majorEnum('major'),             // nullable — not required at sign-up
   gradYear:     integer('grad_year'),           // null for professionals
   role:         text('role'),                   // current job title
   createdAt:    timestamp('created_at').notNull().defaultNow(),

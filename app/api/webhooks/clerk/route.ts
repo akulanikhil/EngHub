@@ -16,8 +16,10 @@ interface ClerkUserCreatedEvent {
   type: 'user.created' | 'user.updated' | 'user.deleted'
   data: {
     id: string
+    username?: string | null
     first_name?: string | null
     last_name?: string | null
+    image_url?: string | null
     email_addresses: ClerkEmailAddress[]
     primary_email_address_id: string
     public_metadata: {
@@ -63,15 +65,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No primary email' }, { status: 400 })
     }
 
-    const major = (data.public_metadata?.major ?? 'cs') as
-      | 'cs' | 'elec' | 'mech' | 'civil' | 'chem' | 'aero' | 'bio' | 'env'
+    const major = (data.public_metadata?.major ?? null) as
+      | 'cs' | 'elec' | 'mech' | 'civil' | 'chem' | 'aero' | 'bio' | 'env' | null
 
-    const name = [data.first_name, data.last_name].filter(Boolean).join(' ') || null
+    const name     = [data.first_name, data.last_name].filter(Boolean).join(' ') || null
+    const username = data.username ?? null
+    const imageUrl = data.image_url ?? null
 
     await db.insert(users).values({
       clerkId:  data.id,
       email:    primaryEmail,
       name,
+      username,
+      imageUrl,
       major,
       gradYear: data.public_metadata?.grad_year ?? null,
       role:     data.public_metadata?.role ?? null,
@@ -81,12 +87,16 @@ export async function POST(req: NextRequest) {
   }
 
   if (type === 'user.updated') {
-    const name = [data.first_name, data.last_name].filter(Boolean).join(' ') || null
+    const name     = [data.first_name, data.last_name].filter(Boolean).join(' ') || null
+    const username = data.username ?? null
+    const imageUrl = data.image_url ?? null
     const { major, grad_year, role } = data.public_metadata ?? {}
     await db
       .update(users)
       .set({
         name,
+        username,
+        imageUrl,
         ...(major ? { major: major as typeof users.$inferInsert['major'] } : {}),
         gradYear: grad_year ?? null,
         role: role ?? null,

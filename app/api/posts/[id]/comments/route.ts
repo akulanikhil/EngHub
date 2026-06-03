@@ -17,10 +17,12 @@ export async function GET(_req: NextRequest, { params }: Params) {
       content:     comments.content,
       isAi:        comments.isAi,
       createdAt:   comments.createdAt,
-      authorId:    users.id,
-      authorName:  users.name,
-      authorEmail: users.email,
-      authorMajor: users.major,
+      authorId:       users.id,
+      authorUsername: users.username,
+      authorName:     users.name,
+      authorImageUrl: users.imageUrl,
+      authorEmail:    users.email,
+      authorMajor:    users.major,
     })
     .from(comments)
     .innerJoin(users, eq(comments.userId, users.id))
