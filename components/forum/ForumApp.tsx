@@ -163,7 +163,34 @@ export default function ForumApp() {
   // ── Data fetching ──────────────────────────────────────────────
   useEffect(() => {
     if (!isLoaded || !user) return
-    fetch('/api/me').then(r=>r.json()).then(j=>setMeData(j.data??null)).catch(()=>setMeData(null)).finally(()=>setMeLoading(false))
+    fetch('/api/me')
+      .then(r=>r.json())
+      .then(j => {
+        const me = j.data ?? null
+        setMeData(me)
+        // Patch any already-loaded posts/comments with fresh profile data
+        // (guards against race where fetchPosts ran before ensureUser wrote to DB)
+        if (me) {
+          setPosts(prev => prev.map(p =>
+            p.authorId === me.id
+              ? { ...p, authorUsername: me.username, authorImageUrl: me.imageUrl, authorName: me.name }
+              : p
+          ))
+          setComments(prev => {
+            const updated: Record<string, DisplayComment[]> = {}
+            for (const [postId, list] of Object.entries(prev)) {
+              updated[postId] = list.map(c =>
+                c.authorId === me.id
+                  ? { ...c, authorUsername: me.username, authorImageUrl: me.imageUrl, authorName: me.name }
+                  : c
+              )
+            }
+            return updated
+          })
+        }
+      })
+      .catch(()=>setMeData(null))
+      .finally(()=>setMeLoading(false))
     fetch('/api/posts/counts').then(r=>r.json()).then(j=>setPostCounts(j.data??{})).catch(()=>{})
   }, [isLoaded, user])
 
@@ -182,11 +209,13 @@ export default function ForumApp() {
       .finally(()=>{ setPostsLoading(false); setLoadingMore(false) })
   }, [currentMajor])
 
+  // Wait for meLoading to be false so ensureUser has synced imageUrl/username to DB
+  // before the posts query runs its JOIN against the users table.
   useEffect(() => {
-    if (!isLoaded || !user) return
+    if (!isLoaded || !user || meLoading) return
     setActivePostId(null)
     fetchPosts(1, false)
-  }, [isLoaded, user, fetchPosts])
+  }, [isLoaded, user, meLoading, fetchPosts])
 
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [comments, activePostId])
   useEffect(() => { if (aiScrollRef.current) aiScrollRef.current.scrollTop = aiScrollRef.current.scrollHeight }, [aiMessages, aiTyping])
