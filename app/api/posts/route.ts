@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { users, posts, comments } from '@/lib/db/schema'
 import { eq, desc, sql } from 'drizzle-orm'
 import { ensureUser } from '@/lib/db/ensure-user'
+import { moderate } from '@/lib/moderation'
 
 // GET /api/posts — paginated post list with author info and comment counts
 export async function GET(req: NextRequest) {
@@ -58,6 +59,11 @@ export async function POST(req: NextRequest) {
   const validMajors = ['cs', 'elec', 'mech', 'civil', 'chem', 'aero', 'bio', 'env']
   if (!validMajors.includes(major))
     return NextResponse.json({ error: 'invalid major' }, { status: 422 })
+
+  // Content moderation
+  const mod = moderate(title.trim(), content.trim())
+  if (!mod.allowed)
+    return NextResponse.json({ error: mod.reason }, { status: 422 })
 
   const user = await ensureUser(clerkId)
   if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })

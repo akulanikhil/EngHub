@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { users, posts, comments } from '@/lib/db/schema'
 import { eq, asc } from 'drizzle-orm'
 import { ensureUser } from '@/lib/db/ensure-user'
+import { moderate } from '@/lib/moderation'
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -42,6 +43,13 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   if (!content?.trim())
     return NextResponse.json({ error: 'content is required' }, { status: 422 })
+
+  // Skip moderation for AI-generated comments (cron job)
+  if (!isAi) {
+    const mod = moderate(null, content.trim())
+    if (!mod.allowed)
+      return NextResponse.json({ error: mod.reason }, { status: 422 })
+  }
 
   // Verify post exists
   const [post] = await db.select({ id: posts.id }).from(posts).where(eq(posts.id, postId)).limit(1)
