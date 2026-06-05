@@ -56,12 +56,12 @@ export async function POST(req: NextRequest) {
     .values({ userId: user.id, ...validation.data! })
     .returning({ id: salaries.id, role: salaries.role, company: salaries.company })
 
-  // Enqueue async pipeline jobs — fire and forget
-  await Promise.all([
+  // Enqueue async pipeline jobs — fire and forget (skip silently if Redis not configured)
+  Promise.all([
     enqueueSalaryAggregates(inserted.role, inserted.company),
-    enqueueSalaryAggregates(inserted.role),   // also recompute all-company aggregate
+    enqueueSalaryAggregates(inserted.role),
     enqueueOutlierDetection(inserted.id),
-  ])
+  ]).catch(err => console.warn('[POST /api/salaries] queue unavailable:', err.message))
 
   return NextResponse.json({ data: inserted }, { status: 201 })
 }
