@@ -18,6 +18,7 @@ export default function Navbar() {
         <a href="#demo" className="nav-link">Demo</a>
         <a href="#features" className="nav-link">Features</a>
         <a href="#majors" className="nav-link">Majors</a>
+        <Link href="/salary" className="nav-link">Salaries</Link>
         <a href="#about" className="nav-link">About</a>
         <a href="#contact" className="nav-link">Contact</a>
       </div>
