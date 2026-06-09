@@ -16,15 +16,18 @@ Response rules (follow strictly):
 - Write like a sharp, direct colleague — not a corporate FAQ or motivational poster.`
 
 export async function POST(req: NextRequest) {
+  try {
   const apiKey = process.env.GOOGLE_AI_API_KEY
   if (!apiKey) {
+    console.error('[POST /api/ai] GOOGLE_AI_API_KEY is not set')
     return Response.json(
       { error: 'AI advisor not configured — add GOOGLE_AI_API_KEY to your environment.' },
       { status: 503 }
     )
   }
 
-  const { message, context } = await req.json()
+  const body = await req.json().catch(() => ({}))
+  const { message, context } = body
   if (!message?.trim()) {
     return Response.json({ error: 'message is required' }, { status: 422 })
   }
@@ -37,24 +40,32 @@ export async function POST(req: NextRequest) {
       context.threadContent ? `Original post: ${context.threadContent.slice(0, 300)}` : null,
       context.major ? `Engineering discipline: ${context.major}` : null,
       context.job && context.job !== 'All Roles' ? `Role: ${context.job}` : null,
-      `\nWrite a helpful, specific reply as the EngHub AI Advisor.`,
+      `\nWrite a helpful, specific reply as the EngyNation AI Advisor.`,
     ].filter(Boolean).join('\n')
   }
 
-  const geminiRes = await fetch(`${GEMINI_URL}&key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-      contents: [{ role: 'user', parts: [{ text: userMessage }] }],
-      generationConfig: { maxOutputTokens: 300, temperature: 0.65 },
-    }),
-  }).catch(err => { throw new Error(`Gemini fetch failed: ${err.message}`) })
+  console.log(`[POST /api/ai] calling Gemini model=${MODEL} messageLen=${userMessage.length}`)
+
+  let geminiRes: Response
+  try {
+    geminiRes = await fetch(`${GEMINI_URL}&key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: [{ role: 'user', parts: [{ text: userMessage }] }],
+        generationConfig: { maxOutputTokens: 300, temperature: 0.65 },
+      }),
+    })
+  } catch (fetchErr) {
+    console.error('[POST /api/ai] network error reaching Gemini:', fetchErr)
+    return Response.json({ error: 'Could not reach AI service' }, { status: 502 })
+  }
 
   if (!geminiRes.ok) {
     const errText = await geminiRes.text()
-    console.error('[POST /api/ai] Gemini error:', errText)
-    return Response.json({ error: 'AI request failed' }, { status: 500 })
+    console.error(`[POST /api/ai] Gemini ${geminiRes.status}:`, errText)
+    return Response.json({ error: `AI request failed (${geminiRes.status})`, detail: errText }, { status: 500 })
   }
 
   // Stream SSE from Gemini → plain text chunks to client
@@ -95,4 +106,8 @@ export async function POST(req: NextRequest) {
   return new Response(stream, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   })
+  } catch (err) {
+    console.error('[POST /api/ai] unhandled error:', err)
+    return Response.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }
