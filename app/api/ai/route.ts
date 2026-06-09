@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 
-const MODEL = 'gemini-1.5-flash-latest'
+const MODEL = 'gemini-2.5-flash'
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse`
 
 const SYSTEM_PROMPT = `You are the EngyNation AI Advisor — a concise, sharp career mentor for engineering students and professionals across all disciplines: CS/SWE, EE, ME, Civil, ChE, Aero, BME, and EnvE.
