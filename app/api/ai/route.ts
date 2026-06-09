@@ -1,5 +1,7 @@
 import { NextRequest } from 'next/server'
 
+export const maxDuration = 30  // allow up to 30s for streaming (requires Vercel Pro; ignored on Hobby)
+
 const MODEL = 'gemini-2.5-flash'
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse`
 
@@ -49,7 +51,7 @@ export async function POST(req: NextRequest) {
   const geminiBody = JSON.stringify({
     systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
     contents: [{ role: 'user', parts: [{ text: userMessage }] }],
-    generationConfig: { maxOutputTokens: 300, temperature: 0.65 },
+    generationConfig: { maxOutputTokens: 600, temperature: 0.65 },
   })
 
   // Attempt the Gemini request with one automatic retry on transient errors (503/429)
