@@ -4,7 +4,7 @@
  * without SSE streaming.
  */
 
-const MODEL = 'gemini-2.0-flash'
+const MODEL = 'gemini-3.1-flash-lite'
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`
 
 export const FORUM_REPLY_SYSTEM_PROMPT = `You are the EngyNation AI Advisor — a concise, sharp career mentor for engineering students and professionals across all disciplines: CS/SWE, EE, ME, Civil, ChE, Aero, BME, and EnvE.
