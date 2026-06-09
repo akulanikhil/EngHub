@@ -46,26 +46,40 @@ export async function POST(req: NextRequest) {
 
   console.log(`[POST /api/ai] calling Gemini model=${MODEL} messageLen=${userMessage.length}`)
 
-  let geminiRes: Response
-  try {
-    geminiRes = await fetch(`${GEMINI_URL}&key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{ role: 'user', parts: [{ text: userMessage }] }],
-        generationConfig: { maxOutputTokens: 300, temperature: 0.65 },
-      }),
-    })
-  } catch (fetchErr) {
-    console.error('[POST /api/ai] network error reaching Gemini:', fetchErr)
-    return Response.json({ error: 'Could not reach AI service' }, { status: 502 })
-  }
+  const geminiBody = JSON.stringify({
+    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+    contents: [{ role: 'user', parts: [{ text: userMessage }] }],
+    generationConfig: { maxOutputTokens: 300, temperature: 0.65 },
+  })
 
-  if (!geminiRes.ok) {
+  // Attempt the Gemini request with one automatic retry on transient errors (503/429)
+  let geminiRes: Response
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      geminiRes = await fetch(`${GEMINI_URL}&key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: geminiBody,
+      })
+    } catch (fetchErr) {
+      console.error(`[POST /api/ai] network error (attempt ${attempt}):`, fetchErr)
+      if (attempt === 2) return Response.json({ error: 'Could not reach AI service' }, { status: 502 })
+      await new Promise(r => setTimeout(r, 1500))
+      continue
+    }
+
+    if (geminiRes.ok) break
+
+    // Retry on transient server errors
+    if ((geminiRes.status === 503 || geminiRes.status === 429) && attempt === 1) {
+      console.warn(`[POST /api/ai] Gemini ${geminiRes.status} on attempt 1, retrying in 2s…`)
+      await new Promise(r => setTimeout(r, 2000))
+      continue
+    }
+
     const errText = await geminiRes.text()
     console.error(`[POST /api/ai] Gemini ${geminiRes.status}:`, errText)
-    return Response.json({ error: `AI request failed (${geminiRes.status})`, detail: errText }, { status: 500 })
+    return Response.json({ error: `AI request failed (${geminiRes.status})` }, { status: 500 })
   }
 
   // Stream SSE from Gemini → plain text chunks to client
